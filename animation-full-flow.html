@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Master Animation: Full App Flow - Diamond Paints</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
+
+  <style>
+    :root {
+      --phone-w: 393px;
+      --phone-h: 852px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: transparent;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .embed-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .mockup-wrapper {
+      transform: scale(var(--embed-scale, 0.72));
+      transform-origin: center center;
+      /* No shadow behind phone */
+    }
+
+    .iphone-frame {
+      width: var(--phone-w);
+      height: var(--phone-h);
+      background: #000;
+      border-radius: 54px;
+      padding: 12px;
+      box-shadow: 
+        inset 0 0 0 2px #444a56,
+        inset 0 0 0 5px #1a1e24,
+        0 0 0 3px #2d333e,
+        0 0 0 5px #0f1318;
+      position: relative;
+    }
+
+    .screen-viewport {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      border-radius: 44px;
+      overflow: hidden;
+      position: relative;
+      user-select: none;
+    }
+
+    .dynamic-island {
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 124px;
+      height: 35px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 100;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 12px;
+    }
+
+    .island-cam {
+      width: 11px;
+      height: 11px;
+      background: radial-gradient(circle at 40% 40%, #152238 0%, #05080e 70%);
+      border-radius: 50%;
+    }
+
+    .home-indicator {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 134px;
+      height: 5px;
+      background: #ffffff;
+      border-radius: 3px;
+      z-index: 100;
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    .screen-layer {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: top center;
+      background-repeat: no-repeat;
+      will-change: transform, opacity;
+    }
+
+    #layer-1 {
+      background-image: url('assets/screen_1_home.png');
+      z-index: 10;
+    }
+
+    #layer-2 {
+      background-image: url('assets/screen_2_home_bottomsheet.png');
+      z-index: 12;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    /* GALLERY PICKER SCREEN */
+    #layer-gallery {
+      position: absolute;
+      inset: 0;
+      background: #0b0f17;
+      z-index: 13;
+      opacity: 0;
+      transform: translateY(100%);
+      display: flex;
+      flex-direction: column;
+      padding-top: 52px;
+      padding-bottom: 12px;
+      will-change: transform, opacity;
+      overflow: hidden;
+    }
+
+    .gallery-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 18px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+    }
+
+    .gallery-nav-btn {
+      color: #0099ff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .gallery-header-center {
+      text-align: center;
+    }
+
+    .gallery-header-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .gallery-header-sub {
+      display: block;
+      font-size: 10px;
+      color: #8e9bb0;
+      margin-top: 1px;
+    }
+
+    .gallery-filter-chips {
+      display: flex;
+      gap: 6px;
+      padding: 10px 16px 8px;
+      overflow-x: auto;
+      flex-shrink: 0;
+    }
+
+    .gallery-chip {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #b0bac9;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 11px;
+      border-radius: 14px;
+      white-space: nowrap;
+    }
+
+    .gallery-chip.active {
+      background: #0265c2;
+      border-color: #0099ff;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(2, 101, 194, 0.4);
+    }
+
+    .gallery-grid-scroll {
+      flex: 1;
+      padding: 6px 14px 8px;
+      overflow-y: auto;
+    }
+
+    .gallery-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #8e9bb0;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .gallery-grid-inner {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+
+    .gallery-thumb-item {
+      aspect-ratio: 1;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      cursor: pointer;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2.5px solid transparent;
+      transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+      background-color: #1a2332;
+    }
+
+    .gallery-thumb-item.selected {
+      border-color: #0099ff;
+      box-shadow: 0 0 14px rgba(0, 153, 255, 0.6), inset 0 0 0 1px #fff;
+      transform: scale(1.02);
+    }
+
+    .gallery-check-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 22px;
+      height: 22px;
+      background: #0099ff;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.2s;
+    }
+
+    .gallery-thumb-item.selected .gallery-check-badge {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .gallery-tag-badge {
+      position: absolute;
+      bottom: 5px;
+      left: 5px;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .gallery-bottom-dock {
+      flex-shrink: 0;
+      background: rgba(18, 24, 34, 0.96);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 12px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .gallery-selected-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .gallery-selected-mini-thumb {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background-size: cover;
+      background-position: center;
+      border: 1.5px solid rgba(0, 153, 255, 0.8);
+      flex-shrink: 0;
+    }
+
+    .gallery-selected-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .gallery-selected-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .gallery-selected-meta {
+      font-size: 11px;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    .gallery-selected-meta::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+    }
+
+    .gallery-action-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #0265c2 0%, #0099ff 100%);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 11px 18px;
+      border-radius: 11px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(2, 101, 194, 0.45);
+    }
+
+    /* SCENE 3 CONTAINER */
+    #container-s3 {
+      position: absolute;
+      inset: 0;
+      z-index: 14;
+      opacity: 0;
+      will-change: opacity, transform;
+    }
+
+    #physical-wall-s3 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 590px;
+      background-color: #b19cbf;
+      z-index: 1;
+      transition: background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #layer-cutout-s3 {
+      position: absolute;
+      inset: 0;
+      background-image: url('assets/screen_3_transparent_wall.png');
+      background-size: cover;
+      background-position: top center;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* SCENE 4 CONTAINER */
+    #container-s4 {
+      position: absolute;
+      inset: 0;
+      z-index: 16;
+      opacity: 0;
+      clip-path: inset(0 0 100% 0);
+      will-change: clip-path, opacity;
+    }
+
+    #physical-wall-s4 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 500px;
+      background-color: #4a84b4;
+      z-index: 1;
+      transition: background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #layer-cutout-s4 {
+      position: absolute;
+      inset: 0;
+      background-image: url('assets/screen_4_transparent_wall.png');
+      background-size: cover;
+      background-position: top center;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* PURE VERTICAL WIPE BEAM */
+    .ai-wipe-beam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 50px;
+      margin-top: -25px;
+      pointer-events: none;
+      z-index: 25;
+      opacity: 0;
+      will-change: transform, opacity;
+      background: linear-gradient(
+        180deg,
+        rgba(0, 212, 255, 0) 0%,
+        rgba(0, 212, 255, 0.45) 30%,
+        rgba(255, 255, 255, 0.95) 50%,
+        rgba(168, 85, 247, 0.85) 70%,
+        rgba(236, 72, 153, 0.5) 85%,
+        rgba(236, 72, 153, 0) 100%
+      );
+      box-shadow: 
+        0 0 25px rgba(0, 212, 255, 0.7),
+        0 0 45px rgba(168, 85, 247, 0.5);
+    }
+
+    .ai-screen-glow {
+      position: absolute;
+      inset: 0;
+      border-radius: 44px;
+      box-shadow: inset 0 0 40px rgba(0, 212, 255, 0.35);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 26;
+      transition: opacity 0.3s;
+    }
+
+    /* Touch Gestures */
+    .touch-finger {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(2, 101, 194, 0.45) 60%, transparent 80%);
+      border: 2px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 16px rgba(0, 153, 255, 0.85);
+      pointer-events: none;
+      z-index: 999;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+    }
+
+    .touch-ripple {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2.5px solid rgba(0, 153, 255, 0.9);
+      pointer-events: none;
+      z-index: 998;
+      transform: translate(-50%, -50%) scale(0.3);
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="embed-wrapper">
+    <div class="mockup-wrapper">
+      <div class="iphone-frame">
+        <div class="screen-viewport">
+          
+          <!-- Dynamic Island -->
+          <div class="dynamic-island">
+            <div class="island-cam"></div>
+          </div>
+
+          <!-- Screen 1: Home Base -->
+          <div class="screen-layer" id="layer-1"></div>
+
+          <!-- Screen 2: Drawer -->
+          <div class="screen-layer" id="layer-2"></div>
+
+          <!-- Screen 3: Gallery Picker -->
+          <div id="layer-gallery">
+            <div class="gallery-top-bar">
+              <span class="gallery-nav-btn">&larr; Back</span>
+              <div class="gallery-header-center">
+                <div class="gallery-header-title">
+                  <span>Recents</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <span class="gallery-header-sub">12 Photos &bull; Tap to Select</span>
+              </div>
+              <span class="gallery-nav-btn" style="font-weight:700;">Select</span>
+            </div>
+
+            <div class="gallery-filter-chips">
+              <span class="gallery-chip active">All Photos</span>
+              <span class="gallery-chip">Living Rooms</span>
+              <span class="gallery-chip">Bedrooms</span>
+              <span class="gallery-chip">Interiors</span>
+            </div>
+
+            <div class="gallery-grid-scroll">
+              <div class="gallery-section-label">
+                <span>ROOM INVENTORY</span>
+                <span style="font-size:10px; color:#38bdf8; font-weight:600;">WALL DETECTED</span>
+              </div>
+              <div class="gallery-grid-inner">
+                <div class="gallery-thumb-item selected" id="thumb-target" style="background-image: url('assets/element_room_purple.png');">
+                  <div class="gallery-check-badge">&check;</div>
+                  <div class="gallery-tag-badge">Living Room</div>
+                </div>
+                <div class="gallery-thumb-item" style="background-image: url('assets/gallery/1.jpg');">
+                  <div class="gallery-tag-badge">Lounge</div>
+                </div>
+                <div class="gallery-thumb-item" style="background-image: url('assets/gallery/2.jpg');">
+                  <div class="gallery-tag-badge">Modern</div>
+                </div>
+                <div class="gallery-thumb-item" style="background-image: url('assets/gallery/3.jpg');">
+                  <div class="gallery-tag-badge">Bedroom</div>
+                </div>
+                <div class="gallery-thumb-item" style="background-image: url('assets/element_room_blue.png');">
+                  <div class="gallery-tag-badge">Living Area</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="gallery-bottom-dock">
+              <div class="gallery-selected-row">
+                <div class="gallery-selected-mini-thumb" style="background-image: url('assets/element_room_purple.png');"></div>
+                <div class="gallery-selected-info">
+                  <div class="gallery-selected-title">Living Room &bull; IMG_4092</div>
+                  <div class="gallery-selected-meta">Wall surface detected &bull; Ready to color</div>
+                </div>
+              </div>
+              <button class="gallery-action-btn" type="button">
+                <span>Open in Visualizer</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Scene 3 Container -->
+          <div id="container-s3">
+            <div id="physical-wall-s3"></div>
+            <div id="layer-cutout-s3"></div>
+          </div>
+
+          <!-- Scene 4 Container -->
+          <div id="container-s4">
+            <div id="physical-wall-s4"></div>
+            <div id="layer-cutout-s4"></div>
+          </div>
+
+          <!-- Top-to-Bottom Beam -->
+          <div class="ai-wipe-beam" id="ai-beam"></div>
+          <div class="ai-screen-glow" id="ai-glow"></div>
+
+          <!-- Touch Indicator -->
+          <div class="touch-finger" id="finger"></div>
+          <div class="touch-ripple" id="ripple"></div>
+
+          <!-- iOS Indicator -->
+          <div class="home-indicator"></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    gsap.registerPlugin(CustomEase);
+    CustomEase.create("verticalWipe", "M0,0 C0.25,0.1 0.25,1 1,1");
+    CustomEase.create("softLanding", "M0,0 C0.16,1 0.3,1 1,1");
+
+    const layer1 = document.getElementById('layer-1');
+    const layer2 = document.getElementById('layer-2');
+    const layerGallery = document.getElementById('layer-gallery');
+    const containerS3 = document.getElementById('container-s3');
+    const physicalWallS3 = document.getElementById('physical-wall-s3');
+    const containerS4 = document.getElementById('container-s4');
+    const physicalWallS4 = document.getElementById('physical-wall-s4');
+    const aiBeam = document.getElementById('ai-beam');
+    const aiGlow = document.getElementById('ai-glow');
+    const thumbTarget = document.getElementById('thumb-target');
+    const finger = document.getElementById('finger');
+    const ripple = document.getElementById('ripple');
+
+    function snappyTap(x, y, noRipple = false) {
+      const tl = gsap.timeline();
+      tl.set(finger, { left: x, top: y, scale: 0, opacity: 0 });
+      if (!noRipple) {
+        tl.set(ripple, { left: x, top: y, scale: 0.2, opacity: 0 });
+      }
+      tl.to(finger, { scale: 0.95, opacity: 1, duration: 0.12, ease: "softLanding" });
+      if (!noRipple) {
+        tl.to(ripple, { scale: 1.8, opacity: 0.9, duration: 0.05 }, "-=0.03")
+          .to(ripple, { scale: 2.5, opacity: 0, duration: 0.18, ease: "power2.out" });
+      }
+      tl.to(finger, { scale: 0, opacity: 0, duration: 0.1, ease: "power2.in" }, "-=0.12");
+      return tl;
+    }
+
+    const wipeTracker = { progress: 0 };
+    const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
+
+    tl.set(layer1, { opacity: 1, scale: 1, y: 0 })
+      .set(layer2, { opacity: 0, y: 40 })
+      .set(layerGallery, { opacity: 0, y: 852 })
+      .set(containerS3, { opacity: 0, scale: 0.96 })
+      .call(() => { physicalWallS3.style.backgroundColor = '#b19cbf'; })
+      .set(containerS4, { opacity: 0, clipPath: 'inset(0 0 100% 0)' })
+      .call(() => { physicalWallS4.style.backgroundColor = '#4a84b4'; })
+      .set(aiBeam, { opacity: 0, y: 0 })
+      .set(aiGlow, { opacity: 0 })
+
+      // 1. Home Screen
+      .to(layer1, { duration: 0.65 })
+      .add(snappyTap(196, 350))
+      .to(layer2, { opacity: 1, y: 0, duration: 0.28, ease: "softLanding" })
+      .to(layer1, { scale: 0.97, opacity: 0.65, duration: 0.28, ease: "power2.out" }, "<")
+
+      // 2. Bottom Sheet Drawer
+      .to(layer2, { duration: 0.7 })
+      .add(snappyTap(196, 792))
+      .to(layerGallery, { opacity: 1, y: 0, duration: 0.35, ease: "softLanding" })
+      .to(layer2, { opacity: 0, duration: 0.2 }, "<")
+
+      // 3. Gallery Picker UI
+      .to(layerGallery, { duration: 0.6 })
+      .add(snappyTap(72, 220))
+      .to(thumbTarget, { scale: 1.06, duration: 0.12, ease: "power1.out" })
+      .to(thumbTarget, { scale: 1.02, duration: 0.15, ease: "power1.in" })
+      .to({}, { duration: 0.35 })
+
+      .add(snappyTap(196, 805))
+      .to(layerGallery, { opacity: 0, scale: 1.05, duration: 0.28, ease: "power2.in" })
+      .to(containerS3, { opacity: 1, scale: 1, duration: 0.32, ease: "softLanding" }, "-=0.15")
+
+      // 4. Live Room Swatch Tinting
+      .to(containerS3, { duration: 0.55 })
+      .add(snappyTap(130, 800))
+      .call(() => { physicalWallS3.style.backgroundColor = '#d9b896'; })
+      .to({}, { duration: 0.85 })
+
+      // 5. Clean Tap on AI Button (Zero circle masks!)
+      .add(snappyTap(328, 575, true))
+      .to(aiGlow, { opacity: 0.6, duration: 0.2, ease: "power2.out" })
+      .set(containerS4, { opacity: 1, clipPath: 'inset(0 0 100% 0)' })
+      .set(aiBeam, { opacity: 1, y: 0 })
+
+      // Pure Vertical Wipe
+      .to(wipeTracker, {
+        progress: 100,
+        duration: 1.25,
+        ease: "verticalWipe",
+        onUpdate: function() {
+          const p = wipeTracker.progress;
+          containerS4.style.clipPath = `inset(0 0 ${100 - p}% 0)`;
+          const beamY = (p / 100) * 852;
+          aiBeam.style.transform = `translateY(${beamY}px)`;
+        }
+      }, "-=0.05")
+      .to(aiBeam, { opacity: 0, duration: 0.25, ease: "power1.out" }, "-=0.2")
+      .to(aiGlow, { opacity: 0, duration: 0.3, ease: "power2.out" }, "-=0.25")
+
+      // 6. AI Suggestions: Tap Blue Swatch
+      .to(containerS4, { duration: 0.5 })
+      .add(snappyTap(75, 502))
+      .call(() => { physicalWallS4.style.backgroundColor = '#1d4ed8'; })
+      .to({}, { duration: 1.5 });
+
+    // Auto-scale for iframe
+    function resizeMockup() {
+      const h = window.innerHeight;
+      const w = window.innerWidth;
+      const urlParams = new URLSearchParams(window.location.search);
+      const isExact = urlParams.get('fit') === 'exact';
+      const factor = isExact ? 1.0 : 0.92;
+      const maxLimit = isExact ? 1.0 : 0.9;
+      const scaleH = (h * factor) / 852;
+      const scaleW = (w * factor) / 393;
+      const scale = Math.min(scaleH, scaleW, maxLimit);
+      document.querySelector('.mockup-wrapper').style.transform = `scale(${scale})`;
+    }
+    window.addEventListener('resize', resizeMockup);
+    resizeMockup();
+  </script>
+</body>
+</html>

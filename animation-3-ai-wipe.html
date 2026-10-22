@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animation 3: AI Suggestions & Top-to-Bottom Wipe - Diamond Paints</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
+
+  <style>
+    :root {
+      --phone-w: 393px;
+      --phone-h: 852px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: transparent;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .embed-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .mockup-wrapper {
+      transform: scale(var(--embed-scale, 0.72));
+      transform-origin: center center;
+      /* No shadow behind phone */
+    }
+
+    .iphone-frame {
+      width: var(--phone-w);
+      height: var(--phone-h);
+      background: #000;
+      border-radius: 54px;
+      padding: 12px;
+      box-shadow: 
+        inset 0 0 0 2px #444a56,
+        inset 0 0 0 5px #1a1e24,
+        0 0 0 3px #2d333e,
+        0 0 0 5px #0f1318;
+      position: relative;
+    }
+
+    .screen-viewport {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      border-radius: 44px;
+      overflow: hidden;
+      position: relative;
+      user-select: none;
+    }
+
+    .dynamic-island {
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 124px;
+      height: 35px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 100;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 12px;
+    }
+
+    .island-cam {
+      width: 11px;
+      height: 11px;
+      background: radial-gradient(circle at 40% 40%, #152238 0%, #05080e 70%);
+      border-radius: 50%;
+    }
+
+    .home-indicator {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 134px;
+      height: 5px;
+      background: #ffffff;
+      border-radius: 3px;
+      z-index: 100;
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    /* SCENE 3 CONTAINER (Before AI) */
+    #container-s3 {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+    }
+
+    #physical-wall-s3 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 590px;
+      background-color: #d9b896; /* Warm Tan */
+      z-index: 1;
+    }
+
+    #layer-cutout-s3 {
+      position: absolute;
+      inset: 0;
+      background-image: url('assets/screen_3_transparent_wall.png');
+      background-size: cover;
+      background-position: top center;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* SCENE 4 CONTAINER (After AI - Revealed by Vertical Wipe) */
+    #container-s4 {
+      position: absolute;
+      inset: 0;
+      z-index: 15;
+      clip-path: inset(0 0 100% 0);
+      will-change: clip-path;
+    }
+
+    #physical-wall-s4 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 500px;
+      background-color: #4a84b4; /* Violet Veil Blue */
+      z-index: 1;
+      transition: background-color 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #layer-cutout-s4 {
+      position: absolute;
+      inset: 0;
+      background-image: url('assets/screen_4_transparent_wall.png');
+      background-size: cover;
+      background-position: top center;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* PURE TOP-TO-BOTTOM AI GRADIENT WIPE BEAM */
+    .ai-wipe-beam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 50px;
+      margin-top: -25px;
+      pointer-events: none;
+      z-index: 25;
+      opacity: 0;
+      will-change: transform, opacity;
+      background: linear-gradient(
+        180deg,
+        rgba(0, 212, 255, 0) 0%,
+        rgba(0, 212, 255, 0.45) 30%,
+        rgba(255, 255, 255, 0.95) 50%,
+        rgba(168, 85, 247, 0.85) 70%,
+        rgba(236, 72, 153, 0.5) 85%,
+        rgba(236, 72, 153, 0) 100%
+      );
+      box-shadow: 
+        0 0 25px rgba(0, 212, 255, 0.7),
+        0 0 45px rgba(168, 85, 247, 0.5);
+    }
+
+    .ai-screen-glow {
+      position: absolute;
+      inset: 0;
+      border-radius: 44px;
+      box-shadow: inset 0 0 40px rgba(0, 212, 255, 0.35);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 26;
+      transition: opacity 0.3s;
+    }
+
+    /* Floating Toast */
+    .ai-toast {
+      position: absolute;
+      top: 68px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(18, 24, 34, 0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 212, 255, 0.4);
+      border-radius: 20px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 30;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 212, 255, 0.25);
+    }
+
+    .ai-toast-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #00d4ff;
+      box-shadow: 0 0 8px #00d4ff;
+    }
+
+    .ai-toast-text {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.3px;
+    }
+
+    /* Scene 4: Blue Swatch Hotspots */
+    .swatch-s4 {
+      position: absolute;
+      top: 485px;
+      width: 34px;
+      height: 34px;
+      border-radius: 4px;
+      cursor: pointer;
+      z-index: 45;
+    }
+
+    /* Touch Gestures */
+    .touch-finger {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(2, 101, 194, 0.45) 60%, transparent 80%);
+      border: 2px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 16px rgba(0, 153, 255, 0.85);
+      pointer-events: none;
+      z-index: 999;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+    }
+
+    .touch-ripple {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2.5px solid rgba(0, 153, 255, 0.9);
+      pointer-events: none;
+      z-index: 998;
+      transform: translate(-50%, -50%) scale(0.3);
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="embed-wrapper">
+    <div class="mockup-wrapper">
+      <div class="iphone-frame">
+        <div class="screen-viewport">
+          
+          <!-- Dynamic Island -->
+          <div class="dynamic-island">
+            <div class="island-cam"></div>
+          </div>
+
+          <!-- SCENE 3: Base Room Viewfinder -->
+          <div id="container-s3">
+            <div id="physical-wall-s3"></div>
+            <div id="layer-cutout-s3"></div>
+          </div>
+
+          <!-- SCENE 4: AI Recommendations Screen (Revealed via Top-to-Bottom Wipe) -->
+          <div id="container-s4">
+            <div id="physical-wall-s4"></div>
+            <div id="layer-cutout-s4"></div>
+          </div>
+
+          <!-- Pure Vertical Gradient Wipe Beam -->
+          <div class="ai-wipe-beam" id="ai-beam"></div>
+
+          <!-- Screen Glow -->
+          <div class="ai-screen-glow" id="ai-glow"></div>
+
+          <!-- Floating AI Toast -->
+          <div class="ai-toast" id="ai-toast" style="opacity: 0;">
+            <div class="ai-toast-dot" id="toast-dot"></div>
+            <span class="ai-toast-text" id="toast-text">AI Curated &bull; Royal Azure</span>
+          </div>
+
+          <!-- Swatches for Scene 4 -->
+          <div class="swatch-s4" id="swatch-navy" style="left: 20px;" data-color="#1e3a8a" data-name="Midnight Navy &bull; D-901"></div>
+          <div class="swatch-s4" id="swatch-azure" style="left: 58px;" data-color="#1d4ed8" data-name="Royal Azure &bull; D-808"></div>
+          <div class="swatch-s4" id="swatch-blue" style="left: 96px;" data-color="#2563eb" data-name="Classic Blue &bull; D-802"></div>
+          <div class="swatch-s4" id="swatch-ocean" style="left: 134px;" data-color="#3b82f6" data-name="Ocean Blue &bull; D-704"></div>
+
+          <!-- Touch Gestures -->
+          <div class="touch-finger" id="finger"></div>
+          <div class="touch-ripple" id="ripple"></div>
+
+          <!-- iOS Indicator -->
+          <div class="home-indicator"></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    gsap.registerPlugin(CustomEase);
+    CustomEase.create("verticalWipe", "M0,0 C0.25,0.1 0.25,1 1,1");
+    CustomEase.create("softLanding", "M0,0 C0.16,1 0.3,1 1,1");
+
+    const containerS4 = document.getElementById('container-s4');
+    const physicalWallS4 = document.getElementById('physical-wall-s4');
+    const aiBeam = document.getElementById('ai-beam');
+    const aiGlow = document.getElementById('ai-glow');
+    const aiToast = document.getElementById('ai-toast');
+    const toastDot = document.getElementById('toast-dot');
+    const toastText = document.getElementById('toast-text');
+    const finger = document.getElementById('finger');
+    const ripple = document.getElementById('ripple');
+    const swatchesS4 = document.querySelectorAll('.swatch-s4');
+
+    function snappyTap(x, y, noRipple = false) {
+      const tl = gsap.timeline();
+      tl.set(finger, { left: x, top: y, scale: 0, opacity: 0 });
+      if (!noRipple) {
+        tl.set(ripple, { left: x, top: y, scale: 0.2, opacity: 0 });
+      }
+      tl.to(finger, { scale: 0.95, opacity: 1, duration: 0.12, ease: "softLanding" });
+      if (!noRipple) {
+        tl.to(ripple, { scale: 1.8, opacity: 0.9, duration: 0.05 }, "-=0.03")
+          .to(ripple, { scale: 2.5, opacity: 0, duration: 0.18, ease: "power2.out" });
+      }
+      tl.to(finger, { scale: 0, opacity: 0, duration: 0.1, ease: "power2.in" }, "-=0.12");
+      return tl;
+    }
+
+    function setPhysicalWallColorS4(hex, name) {
+      physicalWallS4.style.backgroundColor = hex;
+      toastDot.style.backgroundColor = hex;
+      if (name) toastText.innerHTML = name;
+    }
+
+    const wipeTracker = { progress: 0 };
+    const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.2 });
+
+    tl.set(containerS4, { clipPath: 'inset(0 0 100% 0)' })
+      .call(() => setPhysicalWallColorS4('#4a84b4', 'AI Curated &bull; Violet Veil'))
+      .set(aiBeam, { opacity: 0, y: 0 })
+      .set(aiGlow, { opacity: 0 })
+      .set(aiToast, { opacity: 0, y: -10 })
+
+      // Initial Hold on Scene 3 Room
+      .to({}, { duration: 0.9 })
+
+      // Clean Tap on AI Sparkle Button (x: 328, y: 575) - Zero circular mask!
+      .add(snappyTap(328, 575, true))
+
+      // Top-to-Bottom Vertical Wipe
+      .to(aiGlow, { opacity: 0.65, duration: 0.2, ease: "power2.out" })
+      .set(aiBeam, { opacity: 1, y: 0 })
+
+      .to(wipeTracker, {
+        progress: 100,
+        duration: 1.3,
+        ease: "verticalWipe",
+        onUpdate: function() {
+          const p = wipeTracker.progress;
+          containerS4.style.clipPath = `inset(0 0 ${100 - p}% 0)`;
+          const beamY = (p / 100) * 852;
+          aiBeam.style.transform = `translateY(${beamY}px)`;
+        }
+      })
+
+      .to(aiBeam, { opacity: 0, duration: 0.25, ease: "power1.out" }, "-=0.2")
+      .to(aiGlow, { opacity: 0, duration: 0.3, ease: "power2.out" }, "-=0.25")
+      .to(aiToast, { opacity: 1, y: 0, duration: 0.35, ease: "softLanding" }, "-=0.1")
+
+      // Tap Royal Azure Swatch (x: 75, y: 502)
+      .add(snappyTap(75, 502))
+      .call(() => setPhysicalWallColorS4('#1d4ed8', 'Royal Azure &bull; D-808'))
+      .to({}, { duration: 1.3 })
+
+      // Tap Midnight Navy Swatch (x: 37, y: 502)
+      .add(snappyTap(37, 502))
+      .call(() => setPhysicalWallColorS4('#1e3a8a', 'Midnight Navy &bull; D-901'))
+      .to({}, { duration: 1.3 })
+
+      // Fade out toast before loop
+      .to(aiToast, { opacity: 0, duration: 0.3 });
+
+    // Interactive clicking for visitors
+    swatchesS4.forEach(swatch => {
+      swatch.addEventListener('click', (e) => {
+        tl.pause();
+        const color = swatch.getAttribute('data-color');
+        const name = swatch.getAttribute('data-name');
+        setPhysicalWallColorS4(color, name);
+      });
+    });
+
+    // Auto-scale for iframe
+    function resizeMockup() {
+      const h = window.innerHeight;
+      const w = window.innerWidth;
+      const scaleH = (h * 0.92) / 852;
+      const scaleW = (w * 0.92) / 393;
+      const scale = Math.min(scaleH, scaleW, 0.9);
+      document.querySelector('.mockup-wrapper').style.transform = `scale(${scale})`;
+    }
+    window.addEventListener('resize', resizeMockup);
+    resizeMockup();
+  </script>
+</body>
+</html>

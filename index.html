@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diamond Paints Visualizer — Pakistan's No.1 Paint</title>
+  <meta name="description" content="Try 1,000+ Diamond ColorMatic Machine shades on your walls instantly. No mess. No guesswork. Just confidence. Download the official Diamond Paints app.">
+
+  <!-- Google Fonts: Manrope (Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* Modal styles for QR scanner */
+    .qr-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 25, 47, 0.7);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .qr-modal.active {
+      display: flex;
+    }
+    .qr-modal-content {
+      background: #ffffff;
+      border-radius: var(--radius-xl);
+      padding: 36px 32px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalPop {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .btn-modal-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--bg-subtle);
+      color: var(--navy-900);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-modal-close:hover {
+      background: var(--red-100);
+      color: var(--red-primary);
+    }
+    .qr-frame {
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 20px;
+      border: 2px dashed var(--border-light);
+      display: inline-block;
+      margin: 20px 0;
+      box-shadow: var(--shadow-sm);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       HERO SECTION (Directly inspired by Image 2 - Overlapping 3-Phone Showcase)
+       ========================================================================== -->
+  <section class="hero-section" id="hero-section">
+    <div class="hero-sticky-container" id="hero-sticky-container">
+      <div class="hero-ambient-glow"></div>
+
+      <div class="container hero-content">
+        <!-- Hero Top Content (Fades out smoothly on scroll) -->
+        <div class="hero-top-content" id="hero-top-content">
+          <!-- Main Title -->
+          <h1 class="hero-headline">
+            Visualize Your Perfect Color<br>
+            before you paint
+          </h1>
+
+          <!-- Subtitle -->
+          <p class="hero-subhead">
+            Try 1,000+ Diamond ColorMatic Machine shades on your walls instantly. No mess. No guesswork. Just confidence.
+          </p>
+
+          <!-- App Store & Google Play Direct Download CTAs -->
+          <div class="hero-cta-group">
+            <div class="store-buttons-row">
+              <!-- Apple App Store Badge -->
+              <a href="https://apps.apple.com/us/app/diamond-paints-visualizer/id6758597892" target="_blank" rel="noopener noreferrer" class="store-badge-link" title="Download on the App Store">
+                <img src="assets/Download_on_the_App_Store_Badge.svg.webp" alt="Download on the App Store" class="store-badge-img">
+              </a>
+
+              <!-- Google Play Badge -->
+              <a href="https://play.google.com/store/apps/details?id=com.diamond.paints&pcampaignid=web_share" target="_blank" rel="noopener noreferrer" class="store-badge-link" title="Get it on Google Play">
+                <img src="assets/google_play_badge.png" alt="Get it on Google Play" class="store-badge-img">
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====================================================================
+             3-PHONE MOCKUP HERO STAGE (Choreographed on scroll)
+             ==================================================================== -->
+        <div class="hero-mockups-stage" id="hero-mockups-stage">
+          <!-- Left Phone (Screen 3: Live AR Room Visualizer) -->
+          <div class="mockup-item mockup-left" id="hero-mockup-left" title="Live AR Wall Visualizer">
+            <img src="exports/iphone-16-pro-mockup-1792582508460.png" alt="Live Room Recoloring Preview - iPhone 16 Pro" class="hero-mockup-img">
+          </div>
+
+          <!-- Center Phone (Screen 1: Home / Browse Room Inspirations - Hero Focus) -->
+          <div class="mockup-item mockup-center" id="hero-mockup-center" title="Home & Room Inspiration">
+            <img src="exports/iphone-16-pro-mockup-1792582528552.png" alt="Diamond Paints Home Screen - iPhone 16 Pro" class="hero-mockup-img">
+          </div>
+
+          <!-- Right Phone (Screen 4: 1000+ DCM Shades & AI Suggestions) -->
+          <div class="mockup-item mockup-right" id="hero-mockup-right" title="1,000+ DCM Shades & AI Suggestions">
+            <img src="exports/iphone-16-pro-mockup-1792583218936.png" alt="1,000+ DCM Shades & AI Suggestions - iPhone 16 Pro" class="hero-mockup-img">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+
+
+  <!-- ==========================================================================
+       SIMPLE PROCESS / HOW IT WORKS SECTION
+       ========================================================================== -->
+  <section class="how-it-works-section" id="how-it-works">
+    <div class="process-sticky-stage" id="process-sticky-stage">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Simple Process</span>
+          <h2 class="section-title">How It Works</h2>
+        </div>
+
+        <!-- Stacking Cards Container -->
+        <div class="process-cards-stack" id="process-cards-stack">
+          <!-- Card 1: Upload or Capture -->
+          <div class="process-card-wrap" data-stack-index="0">
+            <div class="process-card-content">
+              <h3 class="process-card-title">Upload or Capture</h3>
+              <p class="process-card-desc">Snap a quick photo of your room or upload an existing picture directly from your phone’s gallery. The built-in smart edge detection auto-isolates your walls, preserves furniture contours, and maintains natural daylight and shadow balance.</p>
+              <div class="store-buttons-row process-store-buttons">
+                <!-- Apple App Store Badge -->
+                <a href="https://apps.apple.com/us/app/diamond-paints-visualizer/id6758597892" target="_blank" rel="noopener noreferrer" class="store-badge-link" title="Download on the App Store">
+                  <img src="assets/Download_on_the_App_Store_Badge.svg.webp" alt="Download on the App Store" class="store-badge-img">
+                </a>
+
+                <!-- Google Play Badge -->
+                <a href="https://play.google.com/store/apps/details?id=com.diamond.paints&pcampaignid=web_share" target="_blank" rel="noopener noreferrer" class="store-badge-link" title="Get it on Google Play">
+                  <img src="assets/google_play_badge.png" alt="Get it on Google Play" class="store-badge-img">
+                </a>
+              </div>
+            </div>
+            <div class="process-card-media">
+              <img src="app screens/ui screens/1.jpg" alt="Upload or Capture — Diamond Paints Visualizer" class="process-card-img">
+            </div>
+          </div>
+
+          <!-- Card 2: Choose Your Shade -->
+          <div class="process-card-wrap card-shade-bg" data-stack-index="1">
+            <div class="process-card-content">
+              <h3 class="process-card-title">Choose Your Shade</h3>
+              <p class="process-card-desc">Explore over 1,000+ authentic Diamond ColorMatic Machine shades across royal blues, earthy terracottas, and modern neutrals. Easily filter by room mood, compare sheen finishes in real-time, and get the exact shade code for your nearest dealer.</p>
+              <div class="store-buttons-row process-store-buttons">
+                <!-- Apple App Store Badge -->
+                <a href="https://apps.apple.com/us/app/diamond-paints-visualizer/id6758597892" target="_blank" rel="noopener noreferrer" class="store-badge-link" title="Download on the App Store">
+                  <img src="assets/Download_on_the_App_Store_Badge.svg.webp" alt="Download on the App Store" class="store-badge-img">
+                </a>
+
+                <!-- Google Play Badge -->
+                <a href="https://play.google.com/store/apps/details?id=com.diamond.paints&pcampaignid=web_share" target="_blank" rel="noopener noreferrer" class="store-badge-link" title="Get it on Google Play">
+                  <img src="assets/google_play_badge.png" alt="Get it on Google Play" class="store-badge-img">
+                </a>
+              </div>
+            </div>
+            <div class="process-card-media">
+              <img src="app screens/ui screens/2.jpg" alt="Choose Your Shade — Diamond Paints Visualizer" class="process-card-img">
+            </div>
+          </div>
+
+          <!-- Card 3: AI Suggestions -->
+          <div class="process-card-wrap card-ai-bg" data-stack-index="2">
+            <div class="process-card-content">
+              <h3 class="process-card-title">AI Suggestions</h3>
+              <p class="process-card-desc">Select your desired room atmosphere, architectural style, and preferred lighting tone. The built-in AI instantly processes harmonized color palette recommendations, designer contrast pairings, and complementary accent shades tailored specifically to your home.</p>
+              <div class="store-buttons-row process-store-buttons">
+                <!-- Apple App Store Badge -->
+                <a href="https://apps.apple.com/us/app/diamond-paints-visualizer/id6758597892" target="_blank" rel="noopener noreferrer" class="store-badge-link" title="Download on the App Store">
+                  <img src="assets/Download_on_the_App_Store_Badge.svg.webp" alt="Download on the App Store" class="store-badge-img">
+                </a>
+
+                <!-- Google Play Badge -->
+                <a href="https://play.google.com/store/apps/details?id=com.diamond.paints&pcampaignid=web_share" target="_blank" rel="noopener noreferrer" class="store-badge-link" title="Get it on Google Play">
+                  <img src="assets/google_play_badge.png" alt="Get it on Google Play" class="store-badge-img">
+                </a>
+              </div>
+            </div>
+            <div class="process-card-media">
+              <img src="app screens/ui screens/3.jpg" alt="AI Suggestions — Diamond Paints Visualizer" class="process-card-img">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       APP FEATURES SECTION (EVERYTHING YOU NEED TO CHOOSE WITH CONFIDENCE)
+       ========================================================================== -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">App Features</span>
+        <h2 class="section-title">Everything You Need to Choose With Confidence</h2>
+        <p class="section-desc">
+          Cutting-edge computer vision engineered specifically for Diamond Paints chemical pigments and real architectural walls.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Feature 1: Featured Card -->
+        <div class="feature-card featured-card card-mint-bg">
+          <div class="feature-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Image Visualization</h3>
+          <p class="feature-card-text">
+            See any color on your actual walls instantly — no painting required. Our AI recognizes furniture, crown moldings, switches, and natural light sources to preserve photorealistic depth without bleeding over.
+          </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature-card card-shade-bg">
+          <div class="feature-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="13.5" cy="6.5" r=".5"></circle>
+              <circle cx="17.5" cy="10.5" r=".5"></circle>
+              <circle cx="8.5" cy="7.5" r=".5"></circle>
+              <circle cx="6.5" cy="12.5" r=".5"></circle>
+              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path>
+            </svg>
+          </div>
+          <h3 class="feature-card-title">1,000+ DCM Shades</h3>
+          <p class="feature-card-text">
+            Access the full Diamond ColorMatic Machine shade library at your fingertips with official formula codes for 100% in-store matching.
+          </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature-card card-ai-bg">
+          <div class="feature-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Color Representation</h3>
+          <p class="feature-card-text">
+            Industry-leading color accuracy with maximum color representation calibrated for both bright daylight and warm evening lighting conditions.
+          </p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="feature-card card-lavender-bg">
+          <div class="feature-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Easy Sharing</h3>
+          <p class="feature-card-text">
+            Share your visualized rooms with family, painters, or Diamond dealers via WhatsApp with 1 tap, complete with paint codes and finish recommendations.
+          </p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="feature-card card-mint-bg">
+          <div class="feature-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="m9 12 2 2 4-4"></path>
+            </svg>
+          </div>
+          <h3 class="feature-card-title">Eliminate Guesswork</h3>
+          <p class="feature-card-text">
+            Make confident color decisions before you buy a single can of paint. Save thousands of rupees in repainting mistakes and wasted samples.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       UNDERSTAND WHAT YOU NEED SECTION (VERTICAL MARQUEE SHOWCASE)
+       ========================================================================== -->
+  <section class="understand-section" id="understand">
+    <div class="container">
+      <div class="understand-card-wrap">
+        <!-- Left Content -->
+        <div class="understand-content">
+          <h2 class="understand-headline">
+            Understand<br>what you need
+          </h2>
+          <p class="understand-desc">
+            Explore intelligent color palettes, calculate exact paint coverage, and preview authentic Diamond ColorMatic shades tailored to your unique interior lighting and style.
+          </p>
+        </div>
+
+        <!-- Right Vertical Scrolling Showcase -->
+        <div class="understand-showcase-wrap">
+          <!-- Column 1 (Scrolls Slowly Up) -->
+          <div class="understand-marquee-column marquee-col-up">
+            <div class="understand-marquee-track">
+              <div class="ui-screen-card">
+                <img src="assets/ui-screens/Home.png" alt="Diamond Paints Home Dashboard" class="ui-screen-img" loading="lazy">
+              </div>
+              <div class="ui-screen-card">
+                <img src="assets/ui-screens/AI suggestions.png" alt="AI Color Suggestions" class="ui-screen-img" loading="lazy">
+              </div>
+              <div class="ui-screen-card">
+                <img src="assets/ui-screens/Live Preview.png" alt="Live Room AR Preview" class="ui-screen-img" loading="lazy">
+              </div>
+              <!-- Loop Duplicates -->
+              <div class="ui-screen-card" aria-hidden="true">
+                <img src="assets/ui-screens/Home.png" alt="" class="ui-screen-img" loading="lazy">
+              </div>
+              <div class="ui-screen-card" aria-hidden="true">
+                <img src="assets/ui-screens/AI suggestions.png" alt="" class="ui-screen-img" loading="lazy">
+              </div>
+              <div class="ui-screen-card" aria-hidden="true">
+                <img src="assets/ui-screens/Live Preview.png" alt="" class="ui-screen-img" loading="lazy">
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2 (Scrolls Slowly Down) -->
+          <div class="understand-marquee-column marquee-col-down">
+            <div class="understand-marquee-track">
+              <div class="ui-screen-card">
+                <img src="assets/ui-screens/Color Palette Finder.png" alt="Color Palette Finder" class="ui-screen-img" loading="lazy">
+              </div>
+              <div class="ui-screen-card">
+                <img src="assets/ui-screens/Paint a Photo.png" alt="Paint a Photo Wall Visualizer" class="ui-screen-img" loading="lazy">
+              </div>
+              <div class="ui-screen-card">
+                <img src="assets/ui-screens/Product + view all.png" alt="Diamond Paints Products & Shades" class="ui-screen-img" loading="lazy">
+              </div>
+              <!-- Loop Duplicates -->
+              <div class="ui-screen-card" aria-hidden="true">
+                <img src="assets/ui-screens/Color Palette Finder.png" alt="" class="ui-screen-img" loading="lazy">
+              </div>
+              <div class="ui-screen-card" aria-hidden="true">
+                <img src="assets/ui-screens/Paint a Photo.png" alt="" class="ui-screen-img" loading="lazy">
+              </div>
+              <div class="ui-screen-card" aria-hidden="true">
+                <img src="assets/ui-screens/Product + view all.png" alt="" class="ui-screen-img" loading="lazy">
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 3 (Scrolls Slowly Up) -->
+          <div class="understand-marquee-column marquee-col-up marquee-col-3">
+            <div class="understand-marquee-track">
+              <div class="ui-screen-card">
+                <img src="assets/ui-screens/Paint a Photo.png" alt="Paint a Photo Wall Visualizer" class="ui-screen-img" loading="lazy">
+              </div>
+              <div class="ui-screen-card">
+                <img src="assets/ui-screens/Product + view all.png" alt="Diamond Paints Products & Shades" class="ui-screen-img" loading="lazy">
+              </div>
+              <div class="ui-screen-card">
+                <img src="assets/ui-screens/AI suggestions.png" alt="AI Color Suggestions" class="ui-screen-img" loading="lazy">
+              </div>
+              <!-- Loop Duplicates -->
+              <div class="ui-screen-card" aria-hidden="true">
+                <img src="assets/ui-screens/Paint a Photo.png" alt="" class="ui-screen-img" loading="lazy">
+              </div>
+              <div class="ui-screen-card" aria-hidden="true">
+                <img src="assets/ui-screens/Product + view all.png" alt="" class="ui-screen-img" loading="lazy">
+              </div>
+              <div class="ui-screen-card" aria-hidden="true">
+                <img src="assets/ui-screens/AI suggestions.png" alt="" class="ui-screen-img" loading="lazy">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       DOWNLOADS (11,000+) & 5-STAR REVIEWS SHOWCASE SECTION
+       ========================================================================== -->
+  <section class="downloads-reviews-section" id="community-reviews">
+    <div class="container text-center">
+      <div class="downloads-stat-wrap">
+        <div class="downloads-tag">Verified Downloads:</div>
+        <h2 class="downloads-big-number">11,000+</h2>
+        <p class="downloads-subdesc">
+          Together with homeowners, architects, and master painters across Pakistan choosing colors with total confidence.
+        </p>
+      </div>
+    </div>
+
+    <!-- Infinite Horizontal 5-Star Reviews Carousel (No Dates) -->
+    <div class="reviews-marquee-outer">
+      <div class="reviews-marquee-track">
+        <!-- Review Card 1 -->
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">Saved us thousands in paint mistakes</h4>
+          <span class="review-author">Farhan Tariq, Lahore</span>
+          <p class="review-text">
+            “Tried 4 different shades on my living room wall in 2 minutes. Bought the exact Diamond ColorMatic code from our dealer and the finished wall was a 100% match.”
+          </p>
+        </div>
+
+        <!-- Review Card 2 -->
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">The edge detection is mind-blowing</h4>
+          <span class="review-author">Ar. Ayesha Malik, Interior Architect</span>
+          <p class="review-text">
+            “Normally visualizer apps bleed paint over sofas and switches. Diamond Paints AI accurately recognized every molding and furniture boundary with photorealistic light preservation.”
+          </p>
+        </div>
+
+        <!-- Review Card 3 -->
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">Best paint app in Pakistan</h4>
+          <span class="review-author">Usman Siddiqui, Karachi</span>
+          <p class="review-text">
+            “No more guessing with tiny paper cards in dim shops. I tested shades under bright afternoon sun and warm night LED lamps right on my actual bedroom walls.”
+          </p>
+        </div>
+
+        <!-- Review Card 4 -->
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">Clients make decisions in minutes</h4>
+          <span class="review-author">Master Painter Shakeel, Rawalpindi</span>
+          <p class="review-text">
+            “I open this app on my phone for clients on site. They see their room recolored live and pick their DCM shade code immediately. Saves days of back-and-forth arguments.”
+          </p>
+        </div>
+
+        <!-- Review Card 5 -->
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">Photorealistic daylight response</h4>
+          <span class="review-author">Bilal Hasan, Islamabad</span>
+          <p class="review-text">
+            “I was skeptical at first, but how it accounted for natural window light and realistic room shadows completely sold me. Spot-on color depth.”
+          </p>
+        </div>
+
+        <!-- Review Card 6 -->
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">1-tap WhatsApp sharing is genius</h4>
+          <span class="review-author">Zainab Rehman, Faisalabad</span>
+          <p class="review-text">
+            “Visualized 3 living room color options and shared high-res previews directly to our family WhatsApp group. Everyone agreed on the soft terracotta tone instantly.”
+          </p>
+        </div>
+
+        <!-- Review Card 7 -->
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">1,000+ shades in your pocket</h4>
+          <span class="review-author">Hamza Abbasi, Multan</span>
+          <p class="review-text">
+            “Having access to the complete Diamond ColorMatic library with exact tinting codes made ordering from our local dealer effortless.”
+          </p>
+        </div>
+
+        <!-- Review Card 8 -->
+        <div class="review-card">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">Never buying paint blindly again</h4>
+          <span class="review-author">Dr. Nadia Qureshi, Peshawar</span>
+          <p class="review-text">
+            “Renovated our clinic using this app. Saved so much time and avoided painting swatch patches on fresh walls. A true game changer.”
+          </p>
+        </div>
+
+        <!-- DUPLICATE CARDS FOR SEAMLESS INFINITE LOOP (NO DATES) -->
+        <div class="review-card" aria-hidden="true">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">Saved us thousands in paint mistakes</h4>
+          <span class="review-author">Farhan Tariq, Lahore</span>
+          <p class="review-text">
+            “Tried 4 different shades on my living room wall in 2 minutes. Bought the exact Diamond ColorMatic code from our dealer and the finished wall was a 100% match.”
+          </p>
+        </div>
+
+        <div class="review-card" aria-hidden="true">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">The edge detection is mind-blowing</h4>
+          <span class="review-author">Ar. Ayesha Malik, Interior Architect</span>
+          <p class="review-text">
+            “Normally visualizer apps bleed paint over sofas and switches. Diamond Paints AI accurately recognized every molding and furniture boundary with photorealistic light preservation.”
+          </p>
+        </div>
+
+        <div class="review-card" aria-hidden="true">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">Best paint app in Pakistan</h4>
+          <span class="review-author">Usman Siddiqui, Karachi</span>
+          <p class="review-text">
+            “No more guessing with tiny paper cards in dim shops. I tested shades under bright afternoon sun and warm night LED lamps right on my actual bedroom walls.”
+          </p>
+        </div>
+
+        <div class="review-card" aria-hidden="true">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">Clients make decisions in minutes</h4>
+          <span class="review-author">Master Painter Shakeel, Rawalpindi</span>
+          <p class="review-text">
+            “I open this app on my phone for clients on site. They see their room recolored live and pick their DCM shade code immediately. Saves days of back-and-forth arguments.”
+          </p>
+        </div>
+
+        <div class="review-card" aria-hidden="true">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">Photorealistic daylight response</h4>
+          <span class="review-author">Bilal Hasan, Islamabad</span>
+          <p class="review-text">
+            “I was skeptical at first, but how it accounted for natural window light and realistic room shadows completely sold me. Spot-on color depth.”
+          </p>
+        </div>
+
+        <div class="review-card" aria-hidden="true">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">1-tap WhatsApp sharing is genius</h4>
+          <span class="review-author">Zainab Rehman, Faisalabad</span>
+          <p class="review-text">
+            “Visualized 3 living room color options and shared high-res previews directly to our family WhatsApp group. Everyone agreed on the soft terracotta tone instantly.”
+          </p>
+        </div>
+
+        <div class="review-card" aria-hidden="true">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">1,000+ shades in your pocket</h4>
+          <span class="review-author">Hamza Abbasi, Multan</span>
+          <p class="review-text">
+            “Having access to the complete Diamond ColorMatic library with exact tinting codes made ordering from our local dealer effortless.”
+          </p>
+        </div>
+
+        <div class="review-card" aria-hidden="true">
+          <div class="review-stars">★★★★★</div>
+          <h4 class="review-card-title">Never buying paint blindly again</h4>
+          <span class="review-author">Dr. Nadia Qureshi, Peshawar</span>
+          <p class="review-text">
+            “Renovated our clinic using this app. Saved so much time and avoided painting swatch patches on fresh walls. A true game changer.”
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       FREQUENTLY ASKED QUESTIONS (FAQ) SECTION
+       ========================================================================== -->
+  <section class="faq-section" id="faq">
+    <div class="faq-container">
+      <div class="faq-grid">
+        <!-- Left Column: Sticky Title -->
+        <div class="faq-title-col">
+          <h2 class="faq-main-heading">
+            Got questions?<br>
+            <span>We’ve got answers</span>
+          </h2>
+          <p class="faq-subtext">
+            Everything you need to know about the Diamond Paints Visualizer App, 1,000+ DCM shades, real-time AI recoloring, and painting your space with complete confidence.
+          </p>
+        </div>
+
+        <!-- Right Column: Accordion Items -->
+        <div class="faq-accordion-col">
+          <!-- FAQ 1 -->
+          <div class="faq-item">
+            <button class="faq-question-btn" type="button" aria-expanded="false">
+              <span class="faq-question-text">What is the Diamond Paints Visualizer app?</span>
+              <span class="faq-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer-wrapper">
+              <div class="faq-answer-content">
+                <p>
+                  The Diamond Paints Visualizer is Pakistan's premier wall preview mobile application engineered around a simple promise: <strong>Visualize. Decide. Transform.</strong> With advanced real-time computer vision and AI-powered recommendations, it lets you experience over <strong>1,000+ Diamond ColorMatic Machine (DCM)</strong> colors directly on your actual walls before purchasing paint or picking up a brush.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="faq-item">
+            <button class="faq-question-btn" type="button" aria-expanded="false">
+              <span class="faq-question-text">How does “Paint a Photo of Your Interior” work?</span>
+              <span class="faq-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer-wrapper">
+              <div class="faq-answer-content">
+                <p>
+                  Simply snap a photo of any living room, bedroom, or exterior facade—or choose an existing picture from your phone gallery. The app's smart edge-detection and surface isolation algorithms automatically map your wall boundaries, recognizing switches, door frames, baseboards, and furniture. It recolors only the walls while photorealistically preserving natural sunlight, shadows, and architectural texture.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="faq-item">
+            <button class="faq-question-btn" type="button" aria-expanded="false">
+              <span class="faq-question-text">How do the AI Color Recommendations help me choose?</span>
+              <span class="faq-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer-wrapper">
+              <div class="faq-answer-content">
+                <p>
+                  Choosing harmonious color combinations can be intimidating. Our integrated AI visual intelligence analyzes your room’s orientation, daylight exposure, flooring tone, and existing furniture to suggest complementary DCM color palettes, harmonious accent wall pairings, and balanced trim combinations tailored specifically to your unique space.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="faq-item">
+            <button class="faq-question-btn" type="button" aria-expanded="false">
+              <span class="faq-question-text">What is the difference between Color Picker and Color Finder?</span>
+              <span class="faq-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer-wrapper">
+              <div class="faq-answer-content">
+                <p>Both tools help you translate real-world inspiration into exact paint formulas:</p>
+                <ul class="faq-feature-list">
+                  <li><strong>Color Picker (Capture from Anything):</strong> Use your live camera to point at any physical item—a sofa cushion, patterned rug, marble slab, artwork, or curtain—to instantly identify and sample its exact color tone.</li>
+                  <li><strong>Color Finder (Extract from Any Image):</strong> Upload any inspiration picture, Pinterest mood board, or screenshot. The app extracts dominant color tones and pairs them to the closest Diamond ColorMatic Machine (DCM) catalog codes.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 5 -->
+          <div class="faq-item">
+            <button class="faq-question-btn" type="button" aria-expanded="false">
+              <span class="faq-question-text">Can I create and save personalized color collections?</span>
+              <span class="faq-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer-wrapper">
+              <div class="faq-answer-content">
+                <p>
+                  Yes! You can organize your design ideas by creating personalized color collections for different rooms (e.g., Master Bedroom, Living Lounge, Kitchen, Exterior Facade). Save multiple visualized room snapshots, compare before & after views side-by-side, and share high-resolution previews directly to WhatsApp or email to get instant feedback from family, architects, or painters.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 6 -->
+          <div class="faq-item">
+            <button class="faq-question-btn" type="button" aria-expanded="false">
+              <span class="faq-question-text">How does the built-in Paint Calculator work?</span>
+              <span class="faq-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer-wrapper">
+              <div class="faq-answer-content">
+                <p>
+                  Never worry about buying excess paint or running short mid-job. Enter your room dimensions (length, width, ceiling height) and specify the number of doors and windows. The calculator automatically computes your surface square footage and estimates the exact liters and gallons of primer and topcoat required across Diamond Paints product lines.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 7 -->
+          <div class="faq-item">
+            <button class="faq-question-btn" type="button" aria-expanded="false">
+              <span class="faq-question-text">How do I find Diamond Paints products and nearby dealers?</span>
+              <span class="faq-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer-wrapper">
+              <div class="faq-answer-content">
+                <p>
+                  The app features our <strong>Complete Product Catalogue</strong>, allowing you to browse luxury interior emulsions, enamels, weather-resistant exterior coatings, and primers with full technical specifications and sheen levels. The built-in GPS <strong>Store Locator</strong> directs you to your nearest authorized Diamond Paints dealer and ColorMatic Tinting Center across Pakistan with 1-tap directions and phone contacts.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 8 -->
+          <div class="faq-item">
+            <button class="faq-question-btn" type="button" aria-expanded="false">
+              <span class="faq-question-text">Is the Diamond Paints Visualizer free to download?</span>
+              <span class="faq-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer-wrapper">
+              <div class="faq-answer-content">
+                <p>
+                  Yes, the Diamond Paints Visualizer App is 100% free with unlimited room visualizations, instant AI color recommendations, and full access to all 1,000+ DCM shades on both iOS (Apple App Store) and Android (Google Play Store). <strong>See it first. Paint it right.</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       FINAL DOWNLOAD CTA BANNER (Soft Stepped Gradient Ripple Card with Store Badges)
+       ========================================================================== -->
+  <section class="final-cta-section" id="download-cta">
+    <div class="container">
+      <div class="final-cta-card">
+        <!-- Ambient Concentric Ripple Background (Broad Soft Stepped Bands - No White Lines) -->
+        <div class="cta-ripple-wrapper" aria-hidden="true">
+          <svg class="cta-ripple-svg" viewBox="0 0 1100 450" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="softRipple" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3.5" />
+              </filter>
+              <radialGradient id="centerAura" cx="75%" cy="50%" r="42%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.30" />
+                <stop offset="55%" stop-color="#ffffff" stop-opacity="0.12" />
+                <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+
+            <!-- Radial Aura Glow behind ripples -->
+            <rect width="100%" height="100%" fill="url(#centerAura)" />
+
+            <!-- Stepped Concentric Disks with soft feathered edges -->
+            <g filter="url(#softRipple)">
+              <circle cx="825" cy="225" r="700" fill="rgba(255, 255, 255, 0.035)" />
+              <circle cx="825" cy="225" r="540" fill="rgba(255, 255, 255, 0.045)" />
+              <circle cx="825" cy="225" r="410" fill="rgba(255, 255, 255, 0.055)" />
+              <circle cx="825" cy="225" r="300" fill="rgba(255, 255, 255, 0.075)" />
+              <circle cx="825" cy="225" r="205" fill="rgba(255, 255, 255, 0.095)" />
+              <circle cx="825" cy="225" r="130" fill="rgba(255, 255, 255, 0.125)" />
+              <circle cx="825" cy="225" r="65" fill="rgba(255, 255, 255, 0.155)" />
+            </g>
+          </svg>
+        </div>
+
+        <!-- Content -->
+        <div class="cta-card-content">
+          <h2 class="cta-card-title">
+            Your next room color is<br>one link away.
+          </h2>
+          <p class="cta-card-subtitle">
+            Download the official Diamond Paints Visualizer to try 1,000+ shades on your walls in real time, explore smart AI recommendations, and calculate exact paint requirements.
+          </p>
+
+          <!-- Store Buttons (iOS App Store & Google Play) -->
+          <div class="cta-store-buttons">
+            <!-- Apple App Store Badge -->
+            <a href="https://apps.apple.com/us/app/diamond-paints-visualizer/id6758597892" target="_blank" rel="noopener noreferrer" class="store-badge-link" title="Download on the App Store">
+              <img src="assets/Download_on_the_App_Store_Badge.svg.webp" alt="Download on the App Store" class="store-badge-img">
+            </a>
+
+            <!-- Google Play Badge -->
+            <a href="https://play.google.com/store/apps/details?id=com.diamond.paints&pcampaignid=web_share" target="_blank" rel="noopener noreferrer" class="store-badge-link" title="Get it on Google Play">
+              <img src="assets/google_play_badge.png" alt="Get it on Google Play" class="store-badge-img">
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Side: Mobile Phones Showcase (app-002) -->
+        <div class="cta-phones-wrapper">
+          <img src="assets/app-002-web.png" alt="Diamond Paints App Mobile Mockups" class="cta-phones-img">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Minimal Footer -->
+  <footer style="padding: 40px 20px 60px; text-align: center; font-size: 13px; color: #64748b; background: #ffffff;">
+    <p style="margin: 0;">© 2026 Diamond Paints Industries (Pvt.) Ltd. • Pakistan's No.1 Paint Brand. All rights reserved.</p>
+  </footer>
+
+  <!-- ==========================================================================
+       QR CODE QUICK DOWNLOAD MODAL
+       ========================================================================== -->
+  <div class="qr-modal" id="qr-download-modal">
+    <div class="qr-modal-content">
+      <button class="btn-modal-close" id="qr-modal-close">✕</button>
+      <div style="width:48px; height:48px; border-radius:12px; background:var(--navy-50); color:var(--red-primary); display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="5" y="2" width="14" height="20" rx="3"></rect>
+          <line x1="12" y1="18" x2="12" y2="18.01"></line>
+        </svg>
+      </div>
+      <h3 style="font-size:20px; font-weight:800; color:var(--navy-900); margin-bottom:6px;">Scan to Download App</h3>
+      <p style="font-size:13.5px; color:var(--text-secondary); line-height:1.5;">
+        Point your iPhone or Android camera at the QR code below to install the Diamond Paints Visualizer directly.
+      </p>
+
+      <div class="qr-frame">
+        <!-- Crisp SVG QR code representation -->
+        <svg width="180" height="180" viewBox="0 0 100 100" fill="#0a192f">
+          <!-- Corner Pos 1 -->
+          <rect x="5" y="5" width="28" height="28" fill="#0a192f" rx="4"/>
+          <rect x="9" y="9" width="20" height="20" fill="#ffffff" rx="2"/>
+          <rect x="13" y="13" width="12" height="12" fill="#e5252a" rx="1"/>
+
+          <!-- Corner Pos 2 -->
+          <rect x="67" y="5" width="28" height="28" fill="#0a192f" rx="4"/>
+          <rect x="71" y="9" width="20" height="20" fill="#ffffff" rx="2"/>
+          <rect x="75" y="13" width="12" height="12" fill="#e5252a" rx="1"/>
+
+          <!-- Corner Pos 3 -->
+          <rect x="5" y="67" width="28" height="28" fill="#0a192f" rx="4"/>
+          <rect x="9" y="71" width="20" height="20" fill="#ffffff" rx="2"/>
+          <rect x="13" y="75" width="12" height="12" fill="#e5252a" rx="1"/>
+
+          <!-- Simulated QR Data Pattern -->
+          <rect x="38" y="8" width="6" height="6"/>
+          <rect x="48" y="12" width="6" height="6"/>
+          <rect x="56" y="8" width="6" height="6"/>
+          <rect x="38" y="24" width="6" height="6"/>
+          <rect x="48" y="20" width="8" height="6"/>
+
+          <rect x="12" y="38" width="6" height="6"/>
+          <rect x="22" y="44" width="8" height="6"/>
+          <rect x="36" y="38" width="6" height="6"/>
+          <rect x="46" y="36" width="8" height="8" fill="#e5252a"/>
+          <rect x="58" y="42" width="6" height="6"/>
+          <rect x="68" y="38" width="8" height="6"/>
+          <rect x="80" y="44" width="6" height="6"/>
+
+          <rect x="38" y="54" width="6" height="8"/>
+          <rect x="48" y="50" width="6" height="6"/>
+          <rect x="58" y="56" width="6" height="6"/>
+          <rect x="70" y="52" width="6" height="6"/>
+          <rect x="82" y="58" width="6" height="6"/>
+
+          <rect x="38" y="70" width="6" height="6"/>
+          <rect x="48" y="76" width="8" height="6"/>
+          <rect x="60" y="70" width="6" height="6"/>
+          <rect x="72" y="68" width="6" height="8"/>
+          <rect x="82" y="76" width="6" height="6"/>
+          <rect x="44" y="86" width="6" height="6"/>
+          <rect x="56" y="84" width="8" height="6"/>
+          <rect x="70" y="84" width="6" height="6"/>
+        </svg>
+      </div>
+
+      <div style="display:flex; justify-content:center; gap:10px;">
+        <span style="font-size:12px; font-weight:700; color:var(--navy-850);">iOS App Store</span>
+        <span style="color:var(--border-light);">•</span>
+        <span style="font-size:12px; font-weight:700; color:var(--navy-850);">Google Play Store</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

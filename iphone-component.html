@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Standalone iPhone Mockup Component</title>
+  <style>
+    /* ==========================================================================
+       Pure Standalone iPhone 16 Pro Component CSS
+       Drop this entire block or link it in your website!
+       ========================================================================== */
+    :root {
+      --phone-width: 380px;
+      --phone-height: 775px;
+      --phone-radius: 54px;
+      --bezel-width: 9px;
+      --screen-radius: 46px;
+
+      /* Natural Titanium */
+      --titanium-rim: linear-gradient(135deg, #ded6cc 0%, #aa9f92 35%, #766d62 70%, #c5bbb0 100%);
+      --titanium-highlight: rgba(255, 255, 255, 0.45);
+      --button-color: #9c9184;
+    }
+
+    /* Color variations */
+    .iphone-16-pro.black-titanium {
+      --titanium-rim: linear-gradient(135deg, #4f4f54 0%, #29292c 40%, #151517 70%, #3e3e42 100%);
+      --titanium-highlight: rgba(255, 255, 255, 0.2);
+      --button-color: #38383c;
+    }
+
+    .iphone-16-pro.white-titanium {
+      --titanium-rim: linear-gradient(135deg, #ffffff 0%, #e2e4e8 35%, #b8bcc4 70%, #f0f2f5 100%);
+      --titanium-highlight: rgba(255, 255, 255, 0.7);
+      --button-color: #c9ccd4;
+    }
+
+    .iphone-16-pro.desert-titanium {
+      --titanium-rim: linear-gradient(135deg, #eed5c2 0%, #c49f85 35%, #8f6f57 70%, #d8baa5 100%);
+      --titanium-highlight: rgba(255, 240, 230, 0.45);
+      --button-color: #aa866e;
+    }
+
+    .iphone-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      background: #0b0d13;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .iphone-16-pro {
+      position: relative;
+      width: var(--phone-width);
+      height: var(--phone-height);
+      user-select: none;
+    }
+
+    /* Outer Titanium Chassis */
+    .iphone-16-pro .chassis {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: var(--phone-radius);
+      background: var(--titanium-rim);
+      padding: 3.5px;
+      box-shadow: inset 0 1px 2px var(--titanium-highlight), inset 0 -1px 2px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Side Buttons */
+    .iphone-16-pro .btn-hardware {
+      position: absolute;
+      background: var(--button-color);
+      border-radius: 4px;
+      z-index: -1;
+    }
+    .iphone-16-pro .action-btn { left: -4px; top: 105px; width: 4px; height: 28px; }
+    .iphone-16-pro .vol-up { left: -4px; top: 152px; width: 4px; height: 52px; }
+    .iphone-16-pro .vol-down { left: -4px; top: 218px; width: 4px; height: 52px; }
+    .iphone-16-pro .power-btn { right: -4px; top: 155px; width: 4px; height: 78px; }
+    .iphone-16-pro .camera-btn { right: -3px; top: 545px; width: 3px; height: 68px; border-radius: 3px; background: #333; }
+
+    /* Bezel */
+    .iphone-16-pro .bezel {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: calc(var(--phone-radius) - 3.5px);
+      background: #000;
+      padding: var(--bezel-width);
+    }
+
+    /* Screen display */
+    .iphone-16-pro .screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: var(--screen-radius);
+      background: #000;
+      overflow: hidden;
+    }
+
+    /* Dynamic Island */
+    .iphone-16-pro .dynamic-island {
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 116px;
+      height: 33px;
+      background: #000;
+      border-radius: 22px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      box-shadow: 0 0 1px 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .iphone-16-pro .camera-lens {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #07070b;
+      box-shadow: inset 0 0 2px #1e293b;
+    }
+
+    .iphone-16-pro .sensor-lens {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #0b0c10;
+    }
+
+    /* Screen Content */
+    .iphone-16-pro .screen-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+    }
+
+    .iphone-16-pro .screen-content img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Reflection overlay */
+    .iphone-16-pro .glare {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 30;
+      pointer-events: none;
+      background: linear-gradient(130deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.05) 24%, transparent 45%);
+    }
+
+    /* Home bar indicator */
+    .iphone-16-pro .home-bar {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 135px;
+      height: 4.5px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 4px;
+      z-index: 40;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="iphone-container">
+    <!-- THE MOCKUP -->
+    <div class="iphone-16-pro natural-titanium">
+      <div class="chassis">
+        <div class="btn-hardware action-btn"></div>
+        <div class="btn-hardware vol-up"></div>
+        <div class="btn-hardware vol-down"></div>
+        <div class="btn-hardware power-btn"></div>
+        <div class="btn-hardware camera-btn"></div>
+
+        <div class="bezel">
+          <div class="screen">
+            <!-- Dynamic Island -->
+            <div class="dynamic-island">
+              <div class="camera-lens"></div>
+              <div class="sensor-lens"></div>
+            </div>
+
+            <!-- Replace the src below with your website screenshot or app image -->
+            <div class="screen-content">
+              <img id="my-phone-screen" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=760&q=80" alt="App Screen">
+            </div>
+
+            <div class="glare"></div>
+            <div class="home-bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Quick example: To replace the screen programmatically in JavaScript:
+    // document.getElementById('my-phone-screen').src = 'your-new-screenshot.png';
+  </script>
+</body>
+</html>

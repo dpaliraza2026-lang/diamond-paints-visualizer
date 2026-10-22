@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diamond Paints App - 4 Animations Export Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0d14;
+      --card-bg: rgba(18, 24, 34, 0.85);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent: #0265c2;
+      --text: #f0f4f9;
+      --muted: #8b99ae;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at 50% 10%, #151d2f 0%, var(--bg) 80%);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      padding: 30px 24px 80px;
+    }
+
+    header {
+      max-width: 1400px;
+      margin: 0 auto 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .brand-title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-sub {
+      color: var(--muted);
+      font-size: 13.5px;
+      margin-top: 4px;
+    }
+
+    .badge-total {
+      background: linear-gradient(135deg, #0265c2, #0099ff);
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: 20px;
+    }
+
+    .grid-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 24px;
+    }
+
+    .anim-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 22px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .anim-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(2, 101, 194, 0.6);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .card-num {
+      font-size: 11px;
+      font-weight: 800;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      padding: 4px 10px;
+      border-radius: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .card-heading {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 14px;
+      min-height: 34px;
+    }
+
+    .card-frame-wrap {
+      width: 100%;
+      height: 480px;
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .btn-action {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 9px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-action.primary {
+      background: #0265c2;
+      border-color: #0099ff;
+    }
+
+    .snippet-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-family: monospace;
+      font-size: 11px;
+      color: #93c5fd;
+      margin-top: 10px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1 class="brand-title">Diamond Paints &bull; 4 Animations Export Hub</h1>
+      <p class="brand-sub">Method 1 Interactive Embed Components for your Website (Zero Pixelation &bull; Lightweight)</p>
+    </div>
+    <div class="badge-total">4 Animations Ready to Embed</div>
+  </header>
+
+  <main class="grid-container">
+
+    <!-- Card 1: Gallery Import -->
+    <div class="anim-card">
+      <div class="card-top">
+        <span class="card-num">ANIMATION 1</span>
+        <span style="font-size:11px; color:#94a3b8;">4.5s Loop</span>
+      </div>
+      <h3 class="card-heading">1. Capture & Gallery Import</h3>
+      <p class="card-desc">Home screen &rarr; "Paint a Photo" drawer &rarr; iOS Photos Picker &rarr; Room selection into viewfinder.</p>
+      <div class="card-frame-wrap">
+        <iframe src="animation-1-gallery.html" loading="lazy"></iframe>
+      </div>
+      <div class="card-actions">
+        <a href="animation-1-gallery.html" target="_blank" class="btn-action primary">Open Standalone &nearr;</a>
+      </div>
+      <div class="snippet-box">&lt;iframe src="animation-1-gallery.html" style="width:100%; height:550px; border:none;"&gt;&lt;/iframe&gt;</div>
+    </div>
+
+    <!-- Card 2: Swatch Recoloring -->
+    <div class="anim-card">
+      <div class="card-top">
+        <span class="card-num">ANIMATION 2</span>
+        <span style="font-size:11px; color:#94a3b8;">5.0s Loop</span>
+      </div>
+      <h3 class="card-heading">2. Live Swatch Recoloring</h3>
+      <p class="card-desc">Physical wall shape color shifts smoothly (Tan &rarr; Peach &rarr; Blue &rarr; Mint) behind furniture.</p>
+      <div class="card-frame-wrap">
+        <iframe src="animation-2-swatches.html" loading="lazy"></iframe>
+      </div>
+      <div class="card-actions">
+        <a href="animation-2-swatches.html" target="_blank" class="btn-action primary">Open Standalone &nearr;</a>
+      </div>
+      <div class="snippet-box">&lt;iframe src="animation-2-swatches.html" style="width:100%; height:550px; border:none;"&gt;&lt;/iframe&gt;</div>
+    </div>
+
+    <!-- Card 3: AI Wipe -->
+    <div class="anim-card">
+      <div class="card-top">
+        <span class="card-num">ANIMATION 3</span>
+        <span style="font-size:11px; color:#94a3b8;">5.5s Loop</span>
+      </div>
+      <h3 class="card-heading">3. AI Suggestions & Wipe</h3>
+      <p class="card-desc">Tap AI button &rarr; Ultra-smooth top-to-bottom vertical wipe &rarr; AI blue suggestions palette.</p>
+      <div class="card-frame-wrap">
+        <iframe src="animation-3-ai-wipe.html" loading="lazy"></iframe>
+      </div>
+      <div class="card-actions">
+        <a href="animation-3-ai-wipe.html" target="_blank" class="btn-action primary">Open Standalone &nearr;</a>
+      </div>
+      <div class="snippet-box">&lt;iframe src="animation-3-ai-wipe.html" style="width:100%; height:550px; border:none;"&gt;&lt;/iframe&gt;</div>
+    </div>
+
+    <!-- Card 4: Master Full Flow -->
+    <div class="anim-card">
+      <div class="card-top">
+        <span class="card-num" style="background:rgba(168,85,247,0.15); color:#c084fc;">ANIMATION 4 (MASTER)</span>
+        <span style="font-size:11px; color:#94a3b8;">8.8s Loop</span>
+      </div>
+      <h3 class="card-heading">4. All-in-One Full Journey</h3>
+      <p class="card-desc">Full continuous flow: Home &rarr; Gallery &rarr; Swatches &rarr; Vertical AI Wipe &rarr; Blue recommendations.</p>
+      <div class="card-frame-wrap">
+        <iframe src="animation-full-flow.html" loading="lazy"></iframe>
+      </div>
+      <div class="card-actions">
+        <a href="animation-full-flow.html" target="_blank" class="btn-action primary">Open Standalone &nearr;</a>
+        <a href="diamond-paint-animation.html" target="_blank" class="btn-action">Studio Simulator &nearr;</a>
+      </div>
+      <div class="snippet-box">&lt;iframe src="animation-full-flow.html" style="width:100%; height:550px; border:none;"&gt;&lt;/iframe&gt;</div>
+    </div>
+
+  </main>
+
+</body>
+</html>

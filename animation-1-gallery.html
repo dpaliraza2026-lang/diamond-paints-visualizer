@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animation 1: Capture & Gallery Import - Diamond Paints</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
+
+  <style>
+    :root {
+      --phone-w: 393px;
+      --phone-h: 852px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: transparent;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .embed-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .mockup-wrapper {
+      transform: scale(var(--embed-scale, 0.72));
+      transform-origin: center center;
+      /* No shadow behind phone */
+    }
+
+    .iphone-frame {
+      width: var(--phone-w);
+      height: var(--phone-h);
+      background: #000;
+      border-radius: 54px;
+      padding: 12px;
+      box-shadow: 
+        inset 0 0 0 2px #444a56,
+        inset 0 0 0 5px #1a1e24,
+        0 0 0 3px #2d333e,
+        0 0 0 5px #0f1318;
+      position: relative;
+    }
+
+    .screen-viewport {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      border-radius: 44px;
+      overflow: hidden;
+      position: relative;
+      user-select: none;
+    }
+
+    .dynamic-island {
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 124px;
+      height: 35px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 100;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 12px;
+    }
+
+    .island-cam {
+      width: 11px;
+      height: 11px;
+      background: radial-gradient(circle at 40% 40%, #152238 0%, #05080e 70%);
+      border-radius: 50%;
+    }
+
+    .home-indicator {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 134px;
+      height: 5px;
+      background: #ffffff;
+      border-radius: 3px;
+      z-index: 100;
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    .screen-layer {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: top center;
+      background-repeat: no-repeat;
+      will-change: transform, opacity;
+    }
+
+    #layer-1 {
+      background-image: url('assets/screen_1_home.png');
+      z-index: 10;
+    }
+
+    #layer-2 {
+      background-image: url('assets/screen_2_home_bottomsheet.png');
+      z-index: 12;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    /* GALLERY PICKER SCREEN */
+    #layer-gallery {
+      position: absolute;
+      inset: 0;
+      background: #0b0f17;
+      z-index: 13;
+      opacity: 0;
+      transform: translateY(100%);
+      display: flex;
+      flex-direction: column;
+      padding-top: 52px;
+      padding-bottom: 12px;
+      will-change: transform, opacity;
+      overflow: hidden;
+    }
+
+    .gallery-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 18px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+    }
+
+    .gallery-nav-btn {
+      color: #0099ff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .gallery-header-center {
+      text-align: center;
+    }
+
+    .gallery-header-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .gallery-header-sub {
+      display: block;
+      font-size: 10px;
+      color: #8e9bb0;
+      margin-top: 1px;
+    }
+
+    .gallery-filter-chips {
+      display: flex;
+      gap: 6px;
+      padding: 10px 16px 8px;
+      overflow-x: auto;
+      flex-shrink: 0;
+    }
+
+    .gallery-chip {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #b0bac9;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 11px;
+      border-radius: 14px;
+      white-space: nowrap;
+    }
+
+    .gallery-chip.active {
+      background: #0265c2;
+      border-color: #0099ff;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(2, 101, 194, 0.4);
+    }
+
+    .gallery-grid-scroll {
+      flex: 1;
+      padding: 6px 14px 8px;
+      overflow-y: auto;
+    }
+
+    .gallery-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #8e9bb0;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .gallery-grid-inner {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+
+    .gallery-thumb-item {
+      aspect-ratio: 1;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      cursor: pointer;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2.5px solid transparent;
+      transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+      background-color: #1a2332;
+    }
+
+    .gallery-thumb-item.selected {
+      border-color: #0099ff;
+      box-shadow: 0 0 14px rgba(0, 153, 255, 0.6), inset 0 0 0 1px #fff;
+      transform: scale(1.02);
+    }
+
+    .gallery-check-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 22px;
+      height: 22px;
+      background: #0099ff;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.2s;
+    }
+
+    .gallery-thumb-item.selected .gallery-check-badge {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .gallery-tag-badge {
+      position: absolute;
+      bottom: 5px;
+      left: 5px;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Bottom Selection Dock */
+    .gallery-bottom-dock {
+      flex-shrink: 0;
+      background: rgba(18, 24, 34, 0.96);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 12px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .gallery-selected-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .gallery-selected-mini-thumb {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background-size: cover;
+      background-position: center;
+      border: 1.5px solid rgba(0, 153, 255, 0.8);
+      flex-shrink: 0;
+    }
+
+    .gallery-selected-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .gallery-selected-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .gallery-selected-meta {
+      font-size: 11px;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    .gallery-selected-meta::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+    }
+
+    .gallery-action-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #0265c2 0%, #0099ff 100%);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 11px 18px;
+      border-radius: 11px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(2, 101, 194, 0.45);
+    }
+
+    /* SCENE 3 CONTAINER */
+    #container-scene-3 {
+      position: absolute;
+      inset: 0;
+      z-index: 14;
+      opacity: 0;
+      will-change: opacity, transform;
+    }
+
+    #physical-wall-s3 {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 590px;
+      background-color: #d9b896;
+      z-index: 1;
+    }
+
+    #layer-screen-3-cutout {
+      position: absolute;
+      inset: 0;
+      background-image: url('assets/screen_3_transparent_wall.png');
+      background-size: cover;
+      background-position: top center;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Touch Gestures */
+    .touch-finger {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(2, 101, 194, 0.45) 60%, transparent 80%);
+      border: 2px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 16px rgba(0, 153, 255, 0.85);
+      pointer-events: none;
+      z-index: 999;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+    }
+
+    .touch-ripple {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2.5px solid rgba(0, 153, 255, 0.9);
+      pointer-events: none;
+      z-index: 998;
+      transform: translate(-50%, -50%) scale(0.3);
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="embed-wrapper">
+    <div class="mockup-wrapper">
+      <div class="iphone-frame">
+        <div class="screen-viewport">
+          
+          <!-- Dynamic Island -->
+          <div class="dynamic-island">
+            <div class="island-cam"></div>
+          </div>
+
+          <!-- Screen 1: Home Base -->
+          <div class="screen-layer" id="layer-1"></div>
+
+          <!-- Screen 2: Drawer -->
+          <div class="screen-layer" id="layer-2"></div>
+
+          <!-- Screen 3: Authentic Gallery Picker -->
+          <div id="layer-gallery">
+            <div class="gallery-top-bar">
+              <span class="gallery-nav-btn">&larr; Back</span>
+              <div class="gallery-header-center">
+                <div class="gallery-header-title">
+                  <span>Recents</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <span class="gallery-header-sub">12 Photos &bull; Tap to Select</span>
+              </div>
+              <span class="gallery-nav-btn" style="font-weight:700;">Select</span>
+            </div>
+
+            <div class="gallery-filter-chips">
+              <span class="gallery-chip active">All Photos</span>
+              <span class="gallery-chip">Living Rooms</span>
+              <span class="gallery-chip">Bedrooms</span>
+              <span class="gallery-chip">Interiors</span>
+            </div>
+
+            <div class="gallery-grid-scroll">
+              <div class="gallery-section-label">
+                <span>ROOM INVENTORY</span>
+                <span style="font-size:10px; color:#38bdf8; font-weight:600;">WALL DETECTED</span>
+              </div>
+              <div class="gallery-grid-inner">
+                <div class="gallery-thumb-item selected" id="thumb-target" style="background-image: url('assets/element_room_purple.png');">
+                  <div class="gallery-check-badge">&check;</div>
+                  <div class="gallery-tag-badge">Living Room</div>
+                </div>
+                <div class="gallery-thumb-item" style="background-image: url('assets/gallery/1.jpg');">
+                  <div class="gallery-tag-badge">Lounge</div>
+                </div>
+                <div class="gallery-thumb-item" style="background-image: url('assets/gallery/2.jpg');">
+                  <div class="gallery-tag-badge">Modern</div>
+                </div>
+                <div class="gallery-thumb-item" style="background-image: url('assets/gallery/3.jpg');">
+                  <div class="gallery-tag-badge">Bedroom</div>
+                </div>
+                <div class="gallery-thumb-item" style="background-image: url('assets/element_room_blue.png');">
+                  <div class="gallery-tag-badge">Living Area</div>
+                </div>
+                <div class="gallery-thumb-item" style="background-image: url('assets/gallery/1.jpg'); filter: brightness(0.9);">
+                  <div class="gallery-tag-badge">Dining</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="gallery-bottom-dock">
+              <div class="gallery-selected-row">
+                <div class="gallery-selected-mini-thumb" style="background-image: url('assets/element_room_purple.png');"></div>
+                <div class="gallery-selected-info">
+                  <div class="gallery-selected-title">Living Room &bull; IMG_4092</div>
+                  <div class="gallery-selected-meta">Wall surface detected &bull; Ready to color</div>
+                </div>
+              </div>
+              <button class="gallery-action-btn" id="btn-use-photo" type="button">
+                <span>Open in Visualizer</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Scene 3: Live Viewfinder Destination -->
+          <div id="container-scene-3">
+            <div id="physical-wall-s3"></div>
+            <div id="layer-screen-3-cutout"></div>
+          </div>
+
+          <!-- Touch Indicator -->
+          <div class="touch-finger" id="finger"></div>
+          <div class="touch-ripple" id="ripple"></div>
+
+          <!-- iOS Indicator -->
+          <div class="home-indicator"></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    gsap.registerPlugin(CustomEase);
+    CustomEase.create("softLanding", "M0,0 C0.16,1 0.3,1 1,1");
+
+    const layer1 = document.getElementById('layer-1');
+    const layer2 = document.getElementById('layer-2');
+    const layerGallery = document.getElementById('layer-gallery');
+    const containerS3 = document.getElementById('container-scene-3');
+    const thumbTarget = document.getElementById('thumb-target');
+    const finger = document.getElementById('finger');
+    const ripple = document.getElementById('ripple');
+
+    function snappyTap(x, y) {
+      const tl = gsap.timeline();
+      tl.set(finger, { left: x, top: y, scale: 0, opacity: 0 })
+        .set(ripple, { left: x, top: y, scale: 0.2, opacity: 0 })
+        .to(finger, { scale: 0.95, opacity: 1, duration: 0.12, ease: "softLanding" })
+        .to(ripple, { scale: 1.8, opacity: 0.9, duration: 0.05 }, "-=0.03")
+        .to(ripple, { scale: 2.5, opacity: 0, duration: 0.18, ease: "power2.out" })
+        .to(finger, { scale: 0, opacity: 0, duration: 0.1, ease: "power2.in" }, "-=0.12");
+      return tl;
+    }
+
+    const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.2 });
+
+    tl.set(layer1, { opacity: 1, scale: 1, y: 0 })
+      .set(layer2, { opacity: 0, y: 40 })
+      .set(layerGallery, { opacity: 0, y: 852 })
+      .set(containerS3, { opacity: 0, scale: 0.96 })
+
+      // Step 1: Home View
+      .to(layer1, { duration: 0.7 })
+
+      // Tap "Paint a Photo"
+      .add(snappyTap(196, 350))
+      .to(layer2, { opacity: 1, y: 0, duration: 0.28, ease: "softLanding" })
+      .to(layer1, { scale: 0.97, opacity: 0.65, duration: 0.28, ease: "power2.out" }, "<")
+
+      // Step 2: Bottom Sheet View
+      .to(layer2, { duration: 0.7 })
+
+      // Tap "Choose from Gallery"
+      .add(snappyTap(196, 792))
+      .to(layerGallery, { opacity: 1, y: 0, duration: 0.35, ease: "softLanding" })
+      .to(layer2, { opacity: 0, duration: 0.2 }, "<")
+
+      // Step 3: Gallery UI View
+      .to(layerGallery, { duration: 0.6 })
+
+      // Tap Living Room Photo
+      .add(snappyTap(72, 220))
+      .to(thumbTarget, { scale: 1.06, duration: 0.12, ease: "power1.out" })
+      .to(thumbTarget, { scale: 1.02, duration: 0.15, ease: "power1.in" })
+      .to({}, { duration: 0.4 })
+
+      // Tap "Open in Visualizer" button
+      .add(snappyTap(196, 805))
+      .to(layerGallery, { opacity: 0, scale: 1.05, duration: 0.28, ease: "power2.in" })
+      .to(containerS3, { opacity: 1, scale: 1, duration: 0.32, ease: "softLanding" }, "-=0.15")
+
+      // Hold in Room Viewfinder
+      .to({}, { duration: 1.6 });
+
+    // Responsive Auto-Scale for iframe embedding
+    function resizeMockup() {
+      const h = window.innerHeight;
+      const w = window.innerWidth;
+      const scaleH = (h * 0.92) / 852;
+      const scaleW = (w * 0.92) / 393;
+      const scale = Math.min(scaleH, scaleW, 0.9);
+      document.querySelector('.mockup-wrapper').style.transform = `scale(${scale})`;
+    }
+    window.addEventListener('resize', resizeMockup);
+    resizeMockup();
+  </script>
+</body>
+</html>
