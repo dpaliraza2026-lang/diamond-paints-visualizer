@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderHeroFrame(p) {
       const w = window.innerWidth;
-      if (w <= 768) {
+      if (w <= 900) {
         // Mobile view: completely clean static layout — no slide up, no scroll animation, no sticky
         heroTopContent.style.opacity = '';
         heroTopContent.style.transform = '';
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateScrollProgress() {
       const w = window.innerWidth;
-      if (w <= 768) {
+      if (w <= 900) {
         renderHeroFrame(0);
         return;
       }
