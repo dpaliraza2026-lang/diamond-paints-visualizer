@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2.2">
 
   <style>
     /* Modal styles for QR scanner */
@@ -85,7 +85,7 @@
       <div class="hero-ambient-glow"></div>
 
       <!-- Kinetic 4-Line Backdrop Slider Behind Phones (Desktop) -->
-      <div class="hero-bg-text-marquee" id="hero-bg-text-marquee" aria-hidden="true">
+      <div class="hero-bg-text-marquee" id="hero-bg-text-marquee" style="position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden;opacity:0;" aria-hidden="true">
         <!-- Line 1: Appearing from Right (moves Left) -->
         <div class="bg-marquee-line dir-left line-1">
           <div class="bg-marquee-track">
@@ -1031,6 +1031,6 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=2.2"></script>
 </body>
 </html>
