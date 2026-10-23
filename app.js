@@ -4,6 +4,11 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('scrollTo')) {
+    const el = document.getElementById(urlParams.get('scrollTo'));
+    if (el) setTimeout(() => el.scrollIntoView(), 150);
+  }
   // ==========================================
   // 3. APP PREVIEW TABS SWITCHER
   // ==========================================
@@ -67,21 +72,41 @@ document.addEventListener('DOMContentLoaded', () => {
   // - Silky smooth 60/120fps lerp physics
   // ==========================================
   const heroSection = document.getElementById('hero-section');
+  const heroStickyContainer = document.getElementById('hero-sticky-container');
   const heroTopContent = document.getElementById('hero-top-content');
   const heroStage = document.getElementById('hero-mockups-stage');
   const mockupCenter = document.getElementById('hero-mockup-center');
   const mockupLeft = document.getElementById('hero-mockup-left');
   const mockupRight = document.getElementById('hero-mockup-right');
+  const heroBgMarquee = document.getElementById('hero-bg-text-marquee');
 
   if (heroSection && heroTopContent && heroStage && mockupCenter && mockupLeft && mockupRight) {
     let currentProgress = -1;
     let targetProgress = 0;
     let isTicking = false;
+    let currentStageShiftY = 0;
 
     // Smoothstep curve for zero-jerk transitions
     function smoothStep(t) {
       const clamped = Math.max(0, Math.min(1, t));
       return clamped * clamped * (3 - 2 * clamped);
+    }
+
+    // Dynamic calculation: centers the 3 phones in the sticky viewport so top space == bottom space
+    function calculateStageRise() {
+      const phoneImg = mockupCenter.querySelector('img');
+      const phoneHeight = (phoneImg && phoneImg.offsetHeight > 0) ? phoneImg.offsetHeight : (mockupCenter.offsetHeight || 639.2);
+      const viewportHeight = heroStickyContainer ? heroStickyContainer.clientHeight : window.innerHeight;
+      
+      // Target top position to ensure top space == bottom space
+      const targetTop = (viewportHeight - phoneHeight) / 2;
+
+      // Current unshifted top of heroStage relative to heroStickyContainer
+      const stickyRect = heroStickyContainer ? heroStickyContainer.getBoundingClientRect() : { top: 0 };
+      const stageRect = heroStage.getBoundingClientRect();
+      const unshiftedStageTop = (stageRect.top - stickyRect.top) - currentStageShiftY;
+
+      return Math.max(0, unshiftedStageTop - targetTop);
     }
 
     // Responsive position and transform parameters
@@ -92,8 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gap: 32,
         left: { startOffset: -210, endOffset: -352, startY: 85, endY: 0, startScale: 0.95, endScale: 1.0, startOpacity: 0.75, endOpacity: 1.0 },
         right: { startOffset: 210, endOffset: 352, startY: 85, endY: 0, startScale: 0.95, endScale: 1.0, startOpacity: 0.75, endOpacity: 1.0 },
-        center: { startY: 20, endY: 0 },
-        stageRise: 235
+        center: { startY: 20, endY: 0 }
       };
     }
 
@@ -110,13 +134,18 @@ document.addEventListener('DOMContentLoaded', () => {
         mockupLeft.style.opacity = '';
         mockupRight.style.transform = '';
         mockupRight.style.opacity = '';
+        currentStageShiftY = 0;
+        if (heroBgMarquee) {
+          heroBgMarquee.style.opacity = '';
+          heroBgMarquee.style.transform = '';
+        }
         return;
       }
 
       const bp = getHeroBreakpoints();
 
-      // 1. Top Content Opacity Reduction on each scroll (0.00 -> 0.32)
-      const topFadeProg = Math.max(0, Math.min(1, p / 0.32));
+      // 1. Top Content Opacity Reduction on each scroll (0.00 -> 0.30)
+      const topFadeProg = Math.max(0, Math.min(1, p / 0.30));
       const topOpacity = 1 - topFadeProg;
       const topShiftY = -topFadeProg * 35;
       heroTopContent.style.opacity = topOpacity.toFixed(3);
@@ -124,18 +153,20 @@ document.addEventListener('DOMContentLoaded', () => {
       heroTopContent.style.pointerEvents = topOpacity < 0.05 ? 'none' : 'auto';
 
       // 2. Mobile phones scroll up into content's position (0.00 -> 0.65)
+      // Uses calculateStageRise() to ensure top and bottom space are 100% equal
       const stageProg = smoothStep(p / 0.65);
-      const stageShiftY = -stageProg * bp.stageRise;
-      heroStage.style.transform = `translate3d(0, ${stageShiftY.toFixed(2)}px, 0)`;
+      const stageRise = calculateStageRise();
+      currentStageShiftY = -stageProg * stageRise;
+      heroStage.style.transform = `translate3d(0, ${currentStageShiftY.toFixed(2)}px, 0)`;
 
-      // 3. Center Mobile Rises (0.00 -> 0.40) - Animated smoothly on all devices
-      const centerProg = smoothStep(p / 0.40);
+      // 3. Center Mobile Rises (0.00 -> 0.45) - Animated smoothly on all devices
+      const centerProg = smoothStep(p / 0.45);
       const centerY = bp.center.startY + (bp.center.endY - bp.center.startY) * centerProg;
       mockupCenter.style.transform = `translate3d(-50%, ${centerY.toFixed(2)}px, 0) scale(1)`;
 
       // Desktop view: All 3 rise to EQUAL HEIGHT (Y: 0, scale: 1) and EQUAL SPACE (gap: 32px)
-      // 4. Left Mobile Rises and spreads to equal gap
-      const leftProg = p <= 0.18 ? 0 : smoothStep((p - 0.18) / 0.44);
+      // 4. Left Mobile Rises and spreads to equal gap (0.10 -> 0.55)
+      const leftProg = p <= 0.10 ? 0 : smoothStep((p - 0.10) / 0.45);
       const leftOffset = bp.left.startOffset + (bp.left.endOffset - bp.left.startOffset) * leftProg;
       const leftY = bp.left.startY + (bp.left.endY - bp.left.startY) * leftProg;
       const leftScale = bp.left.startScale + (bp.left.endScale - bp.left.startScale) * leftProg;
@@ -143,20 +174,39 @@ document.addEventListener('DOMContentLoaded', () => {
       mockupLeft.style.transform = `translate3d(calc(-50% + ${leftOffset.toFixed(2)}px), ${leftY.toFixed(2)}px, 0) scale(${leftScale.toFixed(3)})`;
       mockupLeft.style.opacity = leftOpacity.toFixed(3);
 
-      // 5. Right Mobile Rises and spreads to equal gap
-      const rightProg = p <= 0.38 ? 0 : smoothStep((p - 0.38) / 0.44);
+      // 5. Right Mobile Rises and spreads to equal gap (0.15 -> 0.65)
+      const rightProg = p <= 0.15 ? 0 : smoothStep((p - 0.15) / 0.50);
       const rightOffset = bp.right.startOffset + (bp.right.endOffset - bp.right.startOffset) * rightProg;
       const rightY = bp.right.startY + (bp.right.endY - bp.right.startY) * rightProg;
       const rightScale = bp.right.startScale + (bp.right.endScale - bp.right.startScale) * rightProg;
       const rightOpacity = bp.right.startOpacity + (bp.right.endOpacity - bp.right.startOpacity) * rightProg;
       mockupRight.style.transform = `translate3d(calc(-50% + ${rightOffset.toFixed(2)}px), ${rightY.toFixed(2)}px, 0) scale(${rightScale.toFixed(3)})`;
       mockupRight.style.opacity = rightOpacity.toFixed(3);
+
+      // 6. Kinetic Backdrop 4-Line Slider appears as 3 phones appear (0.18 -> 0.60)
+      if (heroBgMarquee) {
+        const marqueeProg = p <= 0.18 ? 0 : smoothStep((p - 0.18) / 0.42);
+        heroBgMarquee.style.opacity = marqueeProg.toFixed(3);
+        const marqueeShiftY = (28 * (1 - marqueeProg)).toFixed(1);
+        heroBgMarquee.style.transform = `translate3d(0, ${marqueeShiftY}px, 0)`;
+      }
+
+
+      
     }
 
     function updateScrollProgress() {
       const w = window.innerWidth;
       if (w <= 900) {
         renderHeroFrame(0);
+        return;
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('heroProgress')) {
+        targetProgress = parseFloat(urlParams.get('heroProgress'));
+        currentProgress = targetProgress;
+        renderHeroFrame(targetProgress);
         return;
       }
 

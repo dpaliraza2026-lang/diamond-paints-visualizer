@@ -142,6 +142,7 @@ img {
   max-width: 1240px;
   margin: 0 auto;
   padding: 0 24px;
+  box-sizing: border-box;
 }
 
 .container-narrow {
@@ -303,6 +304,110 @@ img {
   z-index: 1;
 }
 
+/* ==========================================================================
+   HERO BACKDROP KINETIC TEXT MARQUEE (Behind 3 Phones on Desktop)
+   4 Alternating Lines in All Caps Infinite Slider
+   ========================================================================== */
+.hero-bg-text-marquee {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 10px 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.bg-marquee-line {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  position: relative;
+  line-height: 0.95;
+}
+
+.bg-marquee-track {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.bg-marquee-group {
+  display: flex;
+  align-items: center;
+  gap: 52px;
+  padding-right: 52px;
+  flex-shrink: 0;
+  font-family: var(--font-heading), 'Right Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(84px, 9.2vw, 156px);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  word-spacing: 0.04em;
+  line-height: 0.95;
+}
+
+.bg-marquee-group .hero-title-accent,
+.bg-marquee-group span:not(.marquee-bullet) {
+  background: linear-gradient(105deg, #474fe2 0%, #545be4 28%, #646ee8 52%, #7b92ec 85%);
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: #474fe2;
+  opacity: 0.20;
+  display: inline-block;
+}
+
+.marquee-bullet {
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: #e5252a !important;
+  color: #e5252a !important;
+  opacity: 0.20;
+  font-size: 0.5em;
+  line-height: 1;
+  display: inline-block;
+  padding: 0 4px;
+}
+
+/* Line 1 & 3: Appearing from Right (gliding Left) */
+.dir-left .bg-marquee-track {
+  animation: bgMarqueeLeft 68s linear infinite;
+}
+
+/* Line 2 & 4: Appearing from Left (gliding Right) */
+.dir-right .bg-marquee-track {
+  animation: bgMarqueeRight 68s linear infinite;
+}
+
+/* Dynamic speeds for layered kinetic depth */
+.line-1 .bg-marquee-track { animation-duration: 72s; }
+.line-2 .bg-marquee-track { animation-duration: 60s; }
+.line-3 .bg-marquee-track { animation-duration: 76s; }
+.line-4 .bg-marquee-track { animation-duration: 64s; }
+
+@keyframes bgMarqueeLeft {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes bgMarqueeRight {
+  0% { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+
 .hero-content {
   position: relative;
   z-index: 10;
@@ -355,22 +460,23 @@ img {
 }
 
 .hero-headline {
-  font-size: clamp(36px, 1.4rem + 3.6vw, 64px);
+  text-transform: uppercase;
+  font-size: clamp(42px, 1.6rem + 4.5vw, 76px);
   font-weight: 800;
-  line-height: 1.08;
+  line-height: 1.05;
   letter-spacing: 0.01em;
   word-spacing: 0.04em;
   color: var(--heading-color, #202128);
-  max-width: 960px;
+  max-width: 1240px;
   margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   overflow-wrap: break-word;
 }
 
 .hero-title-line {
   display: block;
   font-size: inherit;
-  line-height: 1.08;
+  line-height: 1.05;
 }
 
 .hero-title-accent {
@@ -378,7 +484,9 @@ img {
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   color: #474fe2;
-  display: inline-block;
+  display: inline;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
   font-size: inherit;
 }
 
@@ -393,19 +501,19 @@ img {
 
 @media (min-width: 992px) {
   .hero-headline {
-    font-size: 74px;
-    line-height: 1.03;
-    max-width: 1040px;
+    font-size: 95px;
+    line-height: 1.0;
+    max-width: 1240px;
   }
 }
 
 .hero-subhead {
-  font-size: clamp(15px, 0.9rem + 0.35vw, 17px);
-  font-weight: 400;
-  line-height: 1.6;
+  font-size: clamp(17px, 1rem + 0.45vw, 21px);
+  font-weight: 500;
+  line-height: 1.55;
   color: var(--text-secondary);
-  max-width: 620px;
-  margin-bottom: 22px;
+  max-width: 740px;
+  margin-bottom: 28px;
 }
 
 /* Download CTA Badges & Action Group */
@@ -527,7 +635,7 @@ img {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  height: 690px;
+  height: 640px;
   z-index: 10;
   perspective: 1200px;
   user-select: none;
@@ -1675,7 +1783,7 @@ img {
 
 .downloads-stat-wrap {
   text-align: center;
-  max-width: 760px;
+  max-width: 1040px;
   margin: 0 auto;
   padding: 0 20px;
   display: flex;
@@ -1701,7 +1809,7 @@ img {
   width: 100%;
   text-align: center;
   font-family: var(--font-heading);
-  font-size: clamp(72px, 8.5vw + 1rem, 142px);
+  font-size: clamp(140px, 17vw + 1rem, 280px);
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -1814,7 +1922,8 @@ img {
   }
 
   .downloads-big-number {
-    font-size: clamp(56px, 16vw, 84px);
+    font-size: clamp(80px, 24vw, 128px);
+    line-height: 0.95;
   }
 
   .review-card {
@@ -2407,20 +2516,33 @@ img {
    RESPONSIVE ADJUSTMENTS
    ========================================================================== */
 @media (max-width: 900px) {
+  .hero-content {
+    padding: 0 20px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 auto !important;
+  }
+
   .brand-topbar {
     padding: 12px 16px;
   }
 
   .hero-headline {
-    margin-bottom: 14px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
     letter-spacing: 0.01em;
+    text-align: center;
+    width: 100%;
   }
 
   .hero-title-line {
     display: block;
-    white-space: nowrap;
-    font-size: clamp(24px, 5.2vw, 38px);
-    line-height: 1.12;
+    white-space: normal !important;
+    font-size: 95px;
+    line-height: 0.98;
+    word-break: normal;
+    overflow-wrap: break-word;
   }
 
   .hero-title-accent,
@@ -2429,7 +2551,14 @@ img {
   }
 
   .hero-title-second {
-    margin-top: 4px;
+    margin-top: 6px;
+  }
+
+  .hero-subhead {
+    font-size: clamp(16px, 3.8vw, 19px);
+    line-height: 1.5;
+    max-width: 580px;
+    margin-bottom: 22px;
   }
 
   .pakistan-rank-pill {
@@ -2450,11 +2579,18 @@ img {
     top: auto;
     height: auto;
     min-height: auto;
-    padding: 24px 16px 0;
+    padding: 24px 0 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden;
     background: #ffffff !important;
   }
 
   .hero-ambient-glow {
+    display: none !important;
+  }
+
+  .hero-bg-text-marquee {
     display: none !important;
   }
 
@@ -2464,9 +2600,10 @@ img {
 
   .hero-mobile-carousel {
     display: block !important;
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    margin-top: 18px;
+    width: calc(100% + 40px);
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-top: 20px;
     margin-bottom: 0;
     overflow: hidden;
     position: relative;
@@ -2540,14 +2677,22 @@ img {
 
 @media (max-width: 480px) {
   .hero-headline {
-    margin-bottom: 12px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    text-align: center;
+    width: 100%;
+    padding: 0 4px;
+    box-sizing: border-box;
   }
 
   .hero-title-line {
     display: block;
-    white-space: nowrap;
-    font-size: clamp(18.5px, 5.25vw, 23.5px);
-    line-height: 1.14;
+    white-space: normal !important;
+    font-size: 95px;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    word-break: normal;
+    overflow-wrap: break-word;
   }
 
   .hero-title-accent,
@@ -2556,7 +2701,7 @@ img {
   }
 
   .hero-title-second {
-    margin-top: 3px;
+    margin-top: 4px;
   }
 
   .hero-section {
@@ -2572,7 +2717,9 @@ img {
     top: auto;
     height: auto;
     min-height: auto;
-    padding: 24px 12px 0;
+    padding: 20px 0 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .hero-pill-badge {
@@ -2687,7 +2834,7 @@ img {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 24px 60px rgba(77, 85, 223, 0.22);
+  box-shadow: none !important;
   min-height: 440px;
   overflow: visible;
 }

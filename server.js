@@ -14,7 +14,8 @@ const MIME = {
 
 const server = http.createServer((req, res) => {
   let reqPath = decodeURIComponent(req.url.split('?')[0]);
-  if (reqPath === '/' || reqPath === '/animation') reqPath = '/diamond-paint-animation.html';
+  if (reqPath === '/') reqPath = '/landing-page.html';
+  if (reqPath === '/animation') reqPath = '/diamond-paint-animation.html';
   const filePath = path.join(__dirname, reqPath);
 
   fs.stat(filePath, (err, stats) => {
@@ -28,6 +29,6 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`UI Animation Server running at http://localhost:${PORT}`);
 });
